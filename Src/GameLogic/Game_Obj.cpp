@@ -8,7 +8,13 @@
 
 #include "Game_Obj.hpp"
 //all possible input model
-vector<string> Game_Obj::Type_list={"floor","gate","wall","door","key","player","monster"};
+vector<string> Game_Obj::Type_list=
+            { "floor","gate","wall","door","key","player","monster",
+                //new items in shooting game
+              "teleporter", "elements","weapon","treasureBox","destructibleWall",
+                //new monsters
+              "Static_monster","Moving_monster"
+            };
 Game_Obj::Game_Obj(string model_name)
 {
     if(load_model(model_name))//if model name exists
@@ -49,6 +55,9 @@ Game_Obj::Game_Obj(string model_name)
         {
             texture_index = -1;
             modelFile_name = "teapot";
+        }else{
+            texture_index = -1;
+            modelFile_name = "teapotLowPoly";
         }
         string full_filename ="lib/models/"+modelFile_name+".txt";
         modelFile.open(full_filename);
