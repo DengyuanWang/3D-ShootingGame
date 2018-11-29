@@ -18,6 +18,7 @@ using std::ifstream;
 using namespace std;
 class GUI_OpenGL{
 private:
+    static vector<string> Model_names;
     bool init_tag;
     GLchar* VertexSource;
     GLchar* FragmentSource;
@@ -37,8 +38,8 @@ public:
     void init_source();
     void loadShader(GLuint shaderID, const GLchar* shaderSource);
     void linkshader();
-    bool load_model(Game_Obj &obj_in);//load and append
-    bool draw_model(Game_Obj &obj_in,glm::mat4 view,int tag);//draw all model
+    bool load_models();//load and append
+    bool draw_model(glm::mat4 view,glm::mat4 model,string model_name,string texture);//draw all model
     bool switch_model(int src,int dst);
     bool clear_screen();
     char* readShaderSource(const char* shaderFile);

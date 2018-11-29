@@ -1,0 +1,4 @@
+#index Objname model texture size[fx,fy,fz] position[x y z]
+1 floor cube wood [10 10 2] [0 0 -1] 
+2 gate teapot color [1 1 1] [0 5 1] 
+3 player sphere brick [1 1 1] [0 0 1]

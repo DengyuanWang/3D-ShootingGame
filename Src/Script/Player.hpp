@@ -11,9 +11,9 @@
 
 #include <iostream>
 #include <vector>
-#include "Game_Events.h"
+#include "Component.hpp"
 using namespace std;
-class Player{
+class Player: public Component{
 public:
     bool Death_tag;//default as false
     float Health;//0~100

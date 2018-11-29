@@ -9,7 +9,8 @@
 
 #include "GUI_OpenGL.hpp"
 
-
+vector<string>
+    GUI_OpenGL::Model_names = {"knot","sphere","cube","teapot","teapotLowPoly"};
 GUI_OpenGL::GUI_OpenGL()
 {
     Model_num = 0;
@@ -117,38 +118,53 @@ void GUI_OpenGL::linkshader()
     glBindFragDataLocation(ShaderProgram, 0, "outColor"); // set output
     glLinkProgram(ShaderProgram); //run the linker
 }
-bool GUI_OpenGL::load_model(Game_Obj &obj_in)
+bool GUI_OpenGL::load_models()
 {
-    float* modelData = obj_in.get_Model_data();
-    int numLines = obj_in.get_NumVerts()*8;
-    NumVerts.push_back(numLines/8);
-    
-    GLuint vao;
-    glGenVertexArrays(1, &vao); //Create a VAO
-    Vaos.push_back(vao);
-    glBindVertexArray(Vaos[Vaos.size()-1]); //Bind the above created VAO to the current context
-    
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-    Vbos.push_back(vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, Vbos[Vbos.size()-1]);
-    glBufferData(GL_ARRAY_BUFFER, numLines*sizeof(float), modelData, GL_STATIC_DRAW);
-    
-    GLint posAttrib = glGetAttribLocation(ShaderProgram, "position");
-    glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), 0);
-    //Attribute, vals/attrib., type, isNormalized, stride, offset
-    glEnableVertexAttribArray(posAttrib);
-    
-    GLint normAttrib = glGetAttribLocation(ShaderProgram, "inNormal");
-    glVertexAttribPointer(normAttrib, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(5*sizeof(float)));
-    glEnableVertexAttribArray(normAttrib);
-    
-    GLint texAttrib = glGetAttribLocation(ShaderProgram, "inTexcoord");
-    glEnableVertexAttribArray(texAttrib);
-    glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float)));
-    
-    glEnable(GL_DEPTH_TEST);
-    Model_num++;
+    for(int i=0;i<Model_names.size();i++)//load all models
+    {
+        ifstream modelFile;
+        string full_filename ="lib/models/"+Model_names[i]+".txt";
+        modelFile.open(full_filename);
+        int numLines = 0;
+        modelFile >> numLines;
+        vector<float> Model_data;
+        for (int i = 0; i < numLines; i++){
+            float k;
+            modelFile >> k;
+            Model_data.push_back(k);
+        }
+        printf("Mode line count: %d\n",numLines);
+        
+        float* modelData = Model_data.data();
+        NumVerts.push_back(numLines/8);
+        
+        GLuint vao;
+        glGenVertexArrays(1, &vao); //Create a VAO
+        Vaos.push_back(vao);
+        glBindVertexArray(Vaos[Vaos.size()-1]); //Bind the above created VAO to the current context
+        
+        GLuint vbo;
+        glGenBuffers(1, &vbo);
+        Vbos.push_back(vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, Vbos[Vbos.size()-1]);
+        glBufferData(GL_ARRAY_BUFFER, numLines*sizeof(float), modelData, GL_STATIC_DRAW);
+        
+        GLint posAttrib = glGetAttribLocation(ShaderProgram, "position");
+        glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), 0);
+        //Attribute, vals/attrib., type, isNormalized, stride, offset
+        glEnableVertexAttribArray(posAttrib);
+        
+        GLint normAttrib = glGetAttribLocation(ShaderProgram, "inNormal");
+        glVertexAttribPointer(normAttrib, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(5*sizeof(float)));
+        glEnableVertexAttribArray(normAttrib);
+        
+        GLint texAttrib = glGetAttribLocation(ShaderProgram, "inTexcoord");
+        glEnableVertexAttribArray(texAttrib);
+        glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float)));
+        
+        glEnable(GL_DEPTH_TEST);
+        Model_num++;
+    }
     return true;
 }
 bool GUI_OpenGL::clear_screen()
@@ -157,9 +173,19 @@ bool GUI_OpenGL::clear_screen()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     return true;
 }
-bool GUI_OpenGL::draw_model(Game_Obj &obj_in,glm::mat4 view,int tag)
+bool GUI_OpenGL::draw_model(glm::mat4 view,glm::mat4 model,string model_name,string texture)
 {
-    
+    int tag = 0;
+    int index = 0;//need to decode from model_name;
+    vector<string>::iterator Mindex = std::find(Model_names.begin(), Model_names.end(), model_name);
+    if (Mindex != Model_names.end())
+        index = (int)std::distance( Model_names.begin(), Mindex );//event none
+    else return false;
+    if(texture=="wood")
+        tag = 0;
+    else if(texture=="brick")
+        tag = 1;
+    else tag = -1;
     glUseProgram(ShaderProgram);
     
     glActiveTexture(GL_TEXTURE0);
@@ -170,9 +196,7 @@ bool GUI_OpenGL::draw_model(Game_Obj &obj_in,glm::mat4 view,int tag)
     glBindTexture(GL_TEXTURE_2D, Texs[1]);//brick
     glUniform1i(glGetUniformLocation(ShaderProgram, "tex1"), 1);
     
-    
-    int index = obj_in.get_index();
-    glm::mat4 model = obj_in.get_Model();
+
     GLint uniModel = glGetUniformLocation(ShaderProgram, "model");
     glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -188,9 +212,8 @@ bool GUI_OpenGL::draw_model(Game_Obj &obj_in,glm::mat4 view,int tag)
     
     
     GLint uniColor = glGetUniformLocation(ShaderProgram, "inColor");
-    glm::vec3 colVec(obj_in.key[0]/255.0,obj_in.key[1]/255.0,obj_in.key[2]/255.0);
+    glm::vec3 colVec(0/255.0,0/255.0,0/255.0);
     glUniform3fv(uniColor, 1, glm::value_ptr(colVec));
-    
     GLint uniTexID = glGetUniformLocation(ShaderProgram, "texID");
     glUniform1i(uniTexID, tag);
     

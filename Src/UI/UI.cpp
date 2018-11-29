@@ -113,94 +113,25 @@ bool UI::Init_openGL()
 {
     gui_gl.Aspect = Aspect;
     if(!gui_gl.init_Opengl()) {cout<<"init openGL error"<<endl;return false;}
-    return true;
-}
-bool UI::Load_modelsToOpenGL()
-{
-    for(int i=0;i<G_objs.size();i++)
+    if(!gui_gl.load_models())//load all models in lib/models
     {
-        if(G_objs[i].Loaded_tag==false)//To simplify this, we do not allow to unload a loaded Obj
-        {
-            if(!gui_gl.load_model(G_objs[i])){cout<<"load model error"<<endl;return false;}
-            G_objs[i].Loaded_tag = true;
-        }
-    }
-  return true;
-}
-bool UI::Add_Game_obj(string model_file)
-{
-    Game_Obj new_obj(model_file);
-    if(new_obj.get_model_name()=="")
-    {
-        cout<<"load model"+model_file+"failed"<<endl;
+        cout<<"load model error"<<endl;
         return false;
     }
-    else{
-        new_obj.set_index(G_objs.size());
-        G_objs.push_back(new_obj);
-        return true;
-    }
-}
-bool UI::set_visible(int index)
-{
-    if(index>=G_objs.size())
-        return false;
-    G_objs[index].Display_tag = true;
     return true;
 }
-bool UI::set_Invisible(int index)
-{
-    if(index>=G_objs.size())
-        return false;
-    G_objs[index].Display_tag = false;
-    return true;
-}
-bool UI::uniformScale_obj(int index,float factor)
-{
-    if(index>=G_objs.size()) return false;
-    G_objs[index].uniform_scale(factor);
-    return true;
-}
-bool UI::rotate_obj(int index,glm::vec3 angles)
-{
-    if(index>=G_objs.size()) return false;
-    G_objs[index].rotation(angles);
-    return true;
-}
-bool UI::translate_obj(int index,glm::vec3 vec)
-{
-    if(index>=G_objs.size()) return false;
-    G_objs[index].translate(vec);
-    return true;
-}
-bool UI::apply_mat4(int index,glm::mat4 M4)
-{
-    if(index>=G_objs.size()) return false;
-    G_objs[index].apply(M4);
-    return true;
-}
-bool UI::switch_model(int src, int dst)
-{
-    string tmp = G_objs[dst].get_model_name();
-    G_objs[dst].set_model_name(G_objs[src].get_model_name());
-    G_objs[src].set_model_name(tmp);
-    int tmpk[3];
-    memcpy(tmpk, G_objs[dst].key, 3*sizeof(int));
-    memcpy(G_objs[dst].key, G_objs[src].key , 3*sizeof(int));
-    memcpy(G_objs[src].key, tmpk , 3*sizeof(int));
-    bool tag =G_objs[dst].Display_tag;
-    G_objs[dst].Display_tag = G_objs[src].Display_tag;
-    G_objs[src].Display_tag = tag;
-    return gui_gl.switch_model(src, dst);
-}
-bool UI::Draw()
+bool UI::Draw(vector<string> model_names,vector<glm::mat4> model_matrixs,vector<string> textures)
 {
     gui_gl.clear_screen();
-    for(int i=0;i<G_objs.size();i++)
+    for(int i=0;i<model_names.size();i++)
     {
-        if(G_objs[i].Display_tag==true)//if need display that obj
-            gui_gl.draw_model(G_objs[i],View_matrix,G_objs[i].texture_index);
+        if(!gui_gl.draw_model(View_matrix,model_matrixs[i],model_names[i],textures[i]))
+        {
+            cout<<"draw model fail"<<i<<endl;
+            return false;
+        }
     }
+    
     SDL_GL_SwapWindow(Window);
     return true;
 }
