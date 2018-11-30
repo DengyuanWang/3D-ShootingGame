@@ -9,7 +9,7 @@
 #ifndef Game_Obj_hpp
 #define Game_Obj_hpp
 #include "../Graphics/Model_loader.hpp"
-#include "../Script/Component.hpp"
+#include "../Script/Includer.h"
 using namespace std;
 class Game_Obj{
 private:
@@ -25,7 +25,7 @@ public:
     string Model_name;
     string Texture_name;
     bool Display_tag;//Needed to Display or not
-    vector<Component> Comp_list;//list of component
+    vector<Component*> Comp_list;//list of component
     glm::vec3 FaceAt,Pos,Scales;
 //basic functionalities
     Game_Obj();
@@ -41,7 +41,7 @@ public:
     ~Game_Obj();
 //Specific functionalities to involve game component
     bool attach_component(string component_name);
-    void Update();
+    void Update(UI_Event &input_event);
     
     
 

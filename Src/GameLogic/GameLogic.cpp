@@ -19,8 +19,7 @@ GameLogic::GameLogic()
         cout<<"load and init openGL fail"<<endl;
     }
     Status = 0;
-    eye_pos_offset = glm::vec4(0.01f,0.02f,-0.25f,0);
-    ViewAt_vector = glm::vec4(0,0,0.2f,0);
+
     restart();
 }
 void GameLogic::restart()
@@ -125,23 +124,14 @@ void GameLogic::Add_Game_obj()
 }
 bool GameLogic::Update(UI_Event uievent)
 {
-//Player controller:
-    //move player
-    float step = 0.1;glm::vec3 move_vec{0,0,0};
-    if(uievent.check_event("Up"))
-        move_vec +=glm::vec3{0,0,1};
-    if(uievent.check_event("Down"))
-        move_vec +=glm::vec3{0,0,-1};
-    if(uievent.check_event("Left"))
-        move_vec +=glm::vec3{1,0,0};
-    if(uievent.check_event("Right"))
-        move_vec +=glm::vec3{-1,0,0};
-    if(abs(move_vec.x)+abs(move_vec.y)+abs(move_vec.z)>0.01)
-        G_objs[player_index].local_translate(glm::normalize(move_vec)*step);
-    //change view angle
-    float xy[2] ={-uievent.mouse_status[0]/500.0f,uievent.mouse_status[1]/500.0f};
-    G_objs[player_index].local_rotation(glm::vec3(0,xy[0],0));
-    ViewAt_vector = glm::rotateX(ViewAt_vector,xy[1]);//rotate in model's coordinates
+//Update all Game objs
+    for(int i=0;i<G_objs.size();i++)
+        G_objs[i].Update(uievent);
+    
+//Get camera pos
+    Player *tmp = (Player *)(G_objs[player_index].Comp_list[0]);
+    ViewAt_vector = tmp->ViewAt_vector;
+    eye_pos_offset= tmp->eye_pos_offset;
     set_view();
 //Draw models
     vector<string> model_names,textures;

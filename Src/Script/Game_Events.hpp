@@ -10,10 +10,12 @@
 #define Game_Events_hpp
 #include <iostream>
 #include <vector>
+#include "../UI/UI_Event.hpp"
 using namespace std;
 class Game_Events{
 public:
     static vector<string> Game_Event_list;
     int current_event;
+    string eventname;
 };
 #endif /* Game_Events_h */

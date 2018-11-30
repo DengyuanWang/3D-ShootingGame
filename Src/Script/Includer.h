@@ -6,8 +6,11 @@
 //  Copyright © 2018 Dengyuan Wang. All rights reserved.
 //
 
-#ifndef Includer_h
-#define Includer_h
+#ifndef Script_Includer_h
+#define Script_Includer_h
 
+#include "Player.hpp"
+#include "Monster.hpp"
+#include "Items.hpp"
 
 #endif /* Includer_h */

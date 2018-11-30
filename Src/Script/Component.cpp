@@ -8,3 +8,6 @@
 
 #include "Component.hpp"
 //load and init openGL fail
+Component::Component(){
+    
+}

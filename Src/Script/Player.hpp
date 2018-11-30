@@ -19,7 +19,13 @@ public:
     float Health;//0~100
     float Speed;//default as 1
     vector<string> Abilities;//default as "walk"
+    glm::vec4 ViewAt_vector;//in player's coordination
+    glm::vec4 eye_pos_offset;//in player's coordination
     Player();
-    void Update(Game_Events input_event);
+    void Update(UI_Event &UIEvent, Game_Events &G_event,void* parent);
+    void update_view(UI_Event &UIEvent, Game_Events &G_event,void* parent);
+    void test(){
+        cout<<"test player virtual"<<endl;
+    }
 };
 #endif /* Player_hpp */

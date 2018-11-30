@@ -24,8 +24,9 @@ bool Game_Obj::Specify_type(string name)
     vector<string>::iterator index = std::find(Type_list.begin(), Type_list.end(), name);
     if (index != Type_list.end())
     {
-        Type_index = std::distance( Type_list.begin(), index );;//event none
+        Type_index = (int)std::distance( Type_list.begin(), index );;//event none
         Model_name = Type_list[Type_index];
+        attach_component(name);
         return true;
     }else return false;
 }
@@ -55,12 +56,29 @@ void Game_Obj::local_rotation(glm::vec3 angles)//rotate angles for each axises i
     glm::vec4 x_world,y_world,z_world;
     x_world = Model*x_local;y_world = Model*y_local;z_world = Model*z_local;
     
-    glm::vec3 tran =  glm::vec3(Model[3]);
-    //translate(-tran);//move to world center
     Model = glm::rotate(Model, angles.x, glm::vec3(x_world.x,x_world.y,x_world.z));
     Model = glm::rotate(Model, angles.y, glm::vec3(y_world.x,y_world.y,y_world.z));
     Model = glm::rotate(Model, angles.z, glm::vec3(z_world.z,z_world.y,z_world.z));
-    //translate(tran);//move back
+}
+
+bool Game_Obj::attach_component(string component_name)
+{
+    if(component_name=="player")
+    {
+        Player *tmp = new Player;
+        Comp_list.push_back(tmp);
+    }
+    return true;
+}
+void Game_Obj::Update(UI_Event &input_event)
+{
+    Game_Events G_events;
+    for(int i=0;i<Comp_list.size();i++)
+    {
+        Component* cpt;
+        cpt=Comp_list[i];
+        cpt->Update(input_event,G_events,this);
+    }
 }
 Game_Obj::~Game_Obj()
 {
