@@ -29,9 +29,18 @@ bool Game_Obj::Specify_type(string name)
         return true;
     }else return false;
 }
-void Game_Obj::translate(glm::vec3 T_vec)
+void Game_Obj::translate(glm::vec3 T_vec)//translate in world coordinate
 {
     glm::mat4 trans = glm::translate(glm::mat4(1.0f), T_vec);
+    Model =  trans *Model;
+}
+void Game_Obj::local_translate(glm::vec3 T_vec)//translate in world coordinate
+{
+    glm::vec4 x_local{1.0f,0.0f,0.0f,0},y_local{0.0f,1.0f,0.0f,0},z_local{0.0f,0.0f,1.0f,0};
+    glm::vec4 x_world,y_world,z_world;
+    x_world = Model*x_local;y_world = Model*y_local;z_world = Model*z_local;
+    glm::vec4 vec = T_vec.x*x_world+T_vec.y*y_world+T_vec.z*z_world;
+    glm::mat4 trans = glm::translate(glm::mat4(1.0f), glm::vec3(vec.x,vec.y,vec.z));
     Model =  trans *Model;
 }
 void Game_Obj::scale(glm::vec3 S_vec)
@@ -40,11 +49,18 @@ void Game_Obj::scale(glm::vec3 S_vec)
     modelMatrix = glm::scale(modelMatrix, S_vec);
     Model = Model*modelMatrix;
 }
-void Game_Obj::rotation(glm::vec3 angles)//rotate angles for each axises
+void Game_Obj::local_rotation(glm::vec3 angles)//rotate angles for each axises in local coordinates
 {
-    Model = glm::rotate(Model, angles.x, glm::vec3(1.0f,0.0f,0.0f));
-    Model = glm::rotate(Model, angles.y, glm::vec3(0.0f,1.0f,0.0f));
-    Model = glm::rotate(Model, angles.z, glm::vec3(0.0f,0.0f,1.0f));
+    glm::vec4 x_local{1.0f,0.0f,0.0f,0},y_local{0.0f,1.0f,0.0f,0},z_local{0.0f,0.0f,1.0f,0};
+    glm::vec4 x_world,y_world,z_world;
+    x_world = Model*x_local;y_world = Model*y_local;z_world = Model*z_local;
+    
+    glm::vec3 tran =  glm::vec3(Model[3]);
+    //translate(-tran);//move to world center
+    Model = glm::rotate(Model, angles.x, glm::vec3(x_world.x,x_world.y,x_world.z));
+    Model = glm::rotate(Model, angles.y, glm::vec3(y_world.x,y_world.y,y_world.z));
+    Model = glm::rotate(Model, angles.z, glm::vec3(z_world.z,z_world.y,z_world.z));
+    //translate(tran);//move back
 }
 Game_Obj::~Game_Obj()
 {

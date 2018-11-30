@@ -19,6 +19,8 @@ GameLogic::GameLogic()
         cout<<"load and init openGL fail"<<endl;
     }
     Status = 0;
+    eye_pos_offset = glm::vec4(0.01f,0.02f,-0.25f,0);
+    ViewAt_vector = glm::vec4(0,0,0.2f,0);
     restart();
 }
 void GameLogic::restart()
@@ -96,14 +98,26 @@ void GameLogic::restart()
         }
     }
 //reset view matrix
+    set_view();
+    
+}
+void GameLogic::set_view()
+{
+    /*
+     1. the camera pos is at a const offset: (0.01f,0.05f,-0.1f) of the player's model
+     2. the view direction is a vector in yz plane of player's local coordinate:
+     notice that the up vector is always constant: [0 1 0];
+     */
     glm::mat4 tmpmat = G_objs[player_index].get_Model();
     //get pose, camera is a little higher than player
-    eye_pos = glm::vec3(tmpmat[3])+glm::vec3(0,0.05f,0);
+    float len =sqrt(pow(tmpmat[0].x,2)+pow(tmpmat[0].y,2)+pow(tmpmat[0].z,2));
+    cout<<"x"<<tmpmat[3].x<<"y"<<tmpmat[3].y<<"z"<<tmpmat[3].z<<endl;
+    glm::vec4 offset = tmpmat*eye_pos_offset/len;
+    glm::vec3 eye_pos = glm::vec3(tmpmat[3])+glm::vec3(offset.x,offset.y,offset.z);
     //get viewat_vector, whose length is 0.2f;
-    ViewAt_vec = glm::vec3(0,-1,5);
-    ViewAt_vec = glm::normalize(ViewAt_vec)*0.2f;
+    glm::vec4 View_vec = tmpmat*ViewAt_vector;
     //calculate view_matrix;
-    ui.View_matrix = glm::lookAt(eye_pos-ViewAt_vec, eye_pos, glm::vec3{0,1,0});
+    ui.View_matrix = glm::lookAt(eye_pos-glm::vec3(View_vec.x,View_vec.y,View_vec.z), eye_pos, glm::vec3{0,1,0});
 }
 void GameLogic::Add_Game_obj()
 {
@@ -112,32 +126,23 @@ void GameLogic::Add_Game_obj()
 bool GameLogic::Update(UI_Event uievent)
 {
 //Player controller:
+    //move player
+    float step = 0.1;glm::vec3 move_vec{0,0,0};
+    if(uievent.check_event("Up"))
+        move_vec +=glm::vec3{0,0,1};
+    if(uievent.check_event("Down"))
+        move_vec +=glm::vec3{0,0,-1};
+    if(uievent.check_event("Left"))
+        move_vec +=glm::vec3{1,0,0};
+    if(uievent.check_event("Right"))
+        move_vec +=glm::vec3{-1,0,0};
+    if(abs(move_vec.x)+abs(move_vec.y)+abs(move_vec.z)>0.01)
+        G_objs[player_index].local_translate(glm::normalize(move_vec)*step);
     //change view angle
     float xy[2] ={-uievent.mouse_status[0]/500.0f,uievent.mouse_status[1]/500.0f};
-    ViewAt_vec = glm::rotateY(ViewAt_vec,xy[0]);
-    ViewAt_vec = glm::rotateX(ViewAt_vec,xy[1]);
-    glm::mat4 tmpmat = G_objs[player_index].get_Model();
-    //get pose, camera is a little higher than player
-    eye_pos = glm::vec3(tmpmat[3])+glm::vec3(0.01f,0.05f,-0.1f);
-    ui.View_matrix = glm::lookAt(eye_pos-ViewAt_vec, eye_pos, glm::vec3{0,1,0});
-    //move player
-    if(uievent.check_event("Up"))
-    {
-        
-    }
-    if(uievent.check_event("Down"))
-    {
-        
-    }
-    if(uievent.check_event("Left"))
-    {
-        
-    }
-    if(uievent.check_event("Right"))
-    {
-        
-    }
-    
+    G_objs[player_index].local_rotation(glm::vec3(0,xy[0],0));
+    ViewAt_vector = glm::rotateX(ViewAt_vector,xy[1]);//rotate in model's coordinates
+    set_view();
 //Draw models
     vector<string> model_names,textures;
     vector<glm::mat4> model_matrixs;

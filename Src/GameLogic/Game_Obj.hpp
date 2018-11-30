@@ -26,11 +26,12 @@ public:
     string Texture_name;
     bool Display_tag;//Needed to Display or not
     vector<Component> Comp_list;//list of component
-    
+    glm::vec3 FaceAt,Pos,Scales;
 //basic functionalities
     Game_Obj();
     void translate(glm::vec3 T_vec);
-    void rotation(glm::vec3 angles);//rotate angles for each axises
+    void local_rotation(glm::vec3 angles);//rotate angles for each axises
+    void local_translate(glm::vec3 T_vec);
     void scale(glm::vec3 S_vec);
     glm::mat4 get_Model(){return Model;}
     void apply(glm::mat4 M4){Model = Model*M4;}//apply a mat4 to model matrix

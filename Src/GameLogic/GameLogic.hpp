@@ -16,13 +16,13 @@ private:
     vector<Game_Obj> G_objs;//save all GameObjects
     double Timer = 0;//game timer
     int player_index;
-    glm::vec3 eye_pos;
-    glm::vec3 ViewAt_vec;
+    glm::vec4 eye_pos_offset;//in player's coordination
+    glm::vec4 ViewAt_vector;//in player's coordination
 //functions
     void Add_Game_obj();
     
     
-    
+    void set_view();
     
 public:
     UI ui;
