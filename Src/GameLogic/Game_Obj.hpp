@@ -29,7 +29,6 @@ public:
     
 //basic functionalities
     Game_Obj();
-    bool Load_model(string model_name);
     void translate(glm::vec3 T_vec);
     void rotation(glm::vec3 angles);//rotate angles for each axises
     void scale(glm::vec3 S_vec);

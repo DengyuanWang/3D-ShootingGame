@@ -79,34 +79,38 @@ bool UI::full_screen_switch()//switch between full screen or not
 }
 UI_Event UI::get_input_event()//get event for keyboard input or click
 {
+    UI_Event rst;
     string result;
     int  X=0;
     int  Y=0;
+    const Uint8 *keyboard_state_array = SDL_GetKeyboardState(NULL);
     while(SDL_PollEvent(&WindowsEvent))//loop until get current event
     {
         SDL_GetRelativeMouseState(&X, &Y);
-        if (  (WindowsEvent.type == SDL_QUIT)||
-            (WindowsEvent.type == SDL_KEYUP && WindowsEvent.key.keysym.sym == SDLK_ESCAPE))
-            result = "Esc"; //Exit Game Loop
-        else if (WindowsEvent.type == SDL_KEYDOWN && WindowsEvent.key.keysym.sym == SDLK_f)
-            result = "FullScreen_switch";
-        else if (WindowsEvent.type == SDL_KEYDOWN && WindowsEvent.key.keysym.sym == SDLK_w)
-            result = "Up";
-        else if (WindowsEvent.type == SDL_KEYDOWN && WindowsEvent.key.keysym.sym == SDLK_s)
-            result = "Down";
-        else if (WindowsEvent.type == SDL_KEYDOWN && WindowsEvent.key.keysym.sym == SDLK_a)
-            result = "Left";
-        else if (WindowsEvent.type == SDL_KEYDOWN && WindowsEvent.key.keysym.sym == SDLK_d)
-            result = "Right";
-        else if (WindowsEvent.type == SDL_KEYDOWN && WindowsEvent.key.keysym.sym == SDLK_SPACE)
-            result = "Switch_key";
-        else if (WindowsEvent.type == SDL_KEYDOWN && WindowsEvent.key.keysym.sym == SDLK_c)
-            result = "Switch_freeze";
-        else result = "None";//all other treated as none
-        
-        if(result!="None"||X!=0||Y!=0) break;
+        if(keyboard_state_array[SDL_SCANCODE_ESCAPE])
+            rst.set_event("Esc");
+        else if(keyboard_state_array[SDL_SCANCODE_F1])
+            rst.set_event("FullScreen_switch");
+        else if(keyboard_state_array[SDL_SCANCODE_W] && keyboard_state_array[SDL_SCANCODE_A])
+        {rst.set_event("Up");rst.set_event("Left");}
+        else if (keyboard_state_array[SDL_SCANCODE_W] && keyboard_state_array[SDL_SCANCODE_D])
+        {rst.set_event("Up");rst.set_event("Right");}
+        else if (keyboard_state_array[SDL_SCANCODE_S] && keyboard_state_array[SDL_SCANCODE_A])
+        {rst.set_event("Down");rst.set_event("Left");}
+        else if (keyboard_state_array[SDL_SCANCODE_S] && keyboard_state_array[SDL_SCANCODE_D])
+        {rst.set_event("Down");rst.set_event("Right");}
+        else if(keyboard_state_array[SDL_SCANCODE_W] && !keyboard_state_array[SDL_SCANCODE_S])
+            rst.set_event("Up");
+        else if(keyboard_state_array[SDL_SCANCODE_S] && !keyboard_state_array[SDL_SCANCODE_W])
+            rst.set_event("Down");
+        else if(keyboard_state_array[SDL_SCANCODE_A] && !keyboard_state_array[SDL_SCANCODE_D])
+            rst.set_event("Left");
+        else if(keyboard_state_array[SDL_SCANCODE_D] && !keyboard_state_array[SDL_SCANCODE_A])
+            rst.set_event("Right");
+        else rst.set_event("None");
+        if(!rst.check_event("None")||X!=0||Y!=0) break;
     }
-    UI_Event rst(result);rst.mouse_status[0] = X;rst.mouse_status[1] = Y;
+    rst.mouse_status[0] = X;rst.mouse_status[1] = Y;
     return rst;
 }
 bool UI::Init_openGL()

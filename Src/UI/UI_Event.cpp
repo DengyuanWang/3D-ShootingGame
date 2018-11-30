@@ -9,29 +9,60 @@
 #include "UI_Event.hpp"
 #include <algorithm>
 //all possible input event
-vector<string> UI_Event::Event_list={"None","Esc","FullScreen_switch","Up","Down","Left","Right","Switch_key","Switch_freeze"};
+vector<string> UI_Event::Event_list={"None","Esc","FullScreen_switch",
+    "Up","Down","Left","Right",
+    "UpLeft","UpRight","DownLeft","DownRight"
+};
 UI_Event::UI_Event()
 {
-    Event_index = 0;//event none
-    Event_name = Event_list[0];
+    reset_table();
 }
 UI_Event::UI_Event(string in)
 {
+    reset_table();
     set_event(in);
+}
+bool UI_Event::check_valiable(string in)
+{
+    vector<string>::iterator index = std::find(Event_list.begin(), Event_list.end(), in);
+        if (index != Event_list.end())
+        {
+            return true;
+        }else return false;
 }
 bool UI_Event::set_event(string in)//set event
 {
-    vector<string>::iterator index = std::find(Event_list.begin(), Event_list.end(), in);
-    if (index != Event_list.end())
-    {
-        Event_index = std::distance( Event_list.begin(), index );;//event none
-        Event_name = Event_list[Event_index];
+    if(check_valiable(in)){
+        Event_table[in] = true;
         return true;
-    }else return false;
+    }
+    else
+    return false;
 }
-string UI_Event::get_event()//get event name
+bool UI_Event::reset_event(string in)
 {
-    return Event_name;
+    if(check_valiable(in)){
+        Event_table[in] = false;
+        return true;
+    }
+    else
+        return false;
+}
+void UI_Event::reset_table()
+{
+    for(int i=0;i<Event_list.size();i++)
+        Event_table[Event_list[i]]=false;
+}
+bool UI_Event::check_event(string in)//get event name
+{
+    if(check_valiable(in)){
+        return Event_table[in];
+    }
+    else
+    {
+        cout<<"error event name"<<endl;
+        exit(0);
+    }
 }
 UI_Event::~UI_Event()
 {

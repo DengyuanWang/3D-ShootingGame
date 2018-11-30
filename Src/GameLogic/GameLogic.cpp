@@ -36,8 +36,8 @@ void GameLogic::restart()
         if(tmp[0]=='#') continue;
         else{
             bool player_tag = false;
-            for(int i=0,j=0;i<6;i++)//index,objname,model,texture,size,position;
-                for(j = i+1;j<tmp.length();j++)
+            //index,objname,model,texture,size,position;
+                for(int i=0,j = 0;j<tmp.length();j++)
                 {
                     int k;stringstream ss;float d1,d2,d3;
                     if(tmp[j]==' ') continue;
@@ -51,7 +51,9 @@ void GameLogic::restart()
                             while(tmp[++j]!=' ');
                             //set type
                             G_objs[G_objs.size()-1].Specify_type(tmp.substr(k,j-k));
-                            if(tmp.substr(k,j-k)=="player") player_tag = true;
+                            cout<<tmp.substr(k,j-k)<<endl;
+                            if(tmp.substr(k,j-k)=="player")
+                                player_tag = true;
                             break;
                         case 2://model
                             k = j;
@@ -85,13 +87,23 @@ void GameLogic::restart()
                             break;
                     }
                     i++;
+                    if(player_tag)//recoard player index
+                    {
+                        player_index =(int) G_objs.size()-1;
+                        player_tag = false;
+                    }
                 }
-            if(player_tag)//recoard player index
-                player_index =(int) G_objs.size()-1;
         }
     }
-    //reset view matrix
-    ui.View_matrix = glm::inverse(G_objs[player_index].get_Model());
+//reset view matrix
+    glm::mat4 tmpmat = G_objs[player_index].get_Model();
+    //get pose, camera is a little higher than player
+    eye_pos = glm::vec3(tmpmat[3])+glm::vec3(0,0.05f,0);
+    //get viewat_vector, whose length is 0.2f;
+    ViewAt_vec = glm::vec3(0,-1,5);
+    ViewAt_vec = glm::normalize(ViewAt_vec)*0.2f;
+    //calculate view_matrix;
+    ui.View_matrix = glm::lookAt(eye_pos-ViewAt_vec, eye_pos, glm::vec3{0,1,0});
 }
 void GameLogic::Add_Game_obj()
 {
@@ -99,7 +111,32 @@ void GameLogic::Add_Game_obj()
 }
 bool GameLogic::Update(UI_Event uievent)
 {
-    
+//Player controller:
+    //change view angle
+    float xy[2] ={-uievent.mouse_status[0]/500.0f,uievent.mouse_status[1]/500.0f};
+    ViewAt_vec = glm::rotateY(ViewAt_vec,xy[0]);
+    ViewAt_vec = glm::rotateX(ViewAt_vec,xy[1]);
+    glm::mat4 tmpmat = G_objs[player_index].get_Model();
+    //get pose, camera is a little higher than player
+    eye_pos = glm::vec3(tmpmat[3])+glm::vec3(0.01f,0.05f,-0.1f);
+    ui.View_matrix = glm::lookAt(eye_pos-ViewAt_vec, eye_pos, glm::vec3{0,1,0});
+    //move player
+    if(uievent.check_event("Up"))
+    {
+        
+    }
+    if(uievent.check_event("Down"))
+    {
+        
+    }
+    if(uievent.check_event("Left"))
+    {
+        
+    }
+    if(uievent.check_event("Right"))
+    {
+        
+    }
     
 //Draw models
     vector<string> model_names,textures;

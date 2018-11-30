@@ -24,18 +24,11 @@ int main(int argc, const char * argv[]) {
     while(loop_tag)
     {
         UI_Event ui_event = G_logic.ui.get_input_event();
-        loop_tag = G_logic.Update(ui_event);
-        switch(ui_event.get_event_index())
-        {
-            case 1://"Esc"
+        if(ui_event.check_event("Esc"))
                 loop_tag = false;
-                break;
-            case 2://"Fullscreen_switch"
+        else if(ui_event.check_event("FullScreen_switch"))
                 G_logic.ui.full_screen_switch();
-                break;
-            default:
-                break;
-        }
+        else loop_tag = G_logic.Update(ui_event);
 
     }
 

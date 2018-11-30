@@ -19,56 +19,6 @@ Game_Obj::Game_Obj()
 {
     
 }
-bool Game_Obj::Load_model(string model_name)
-{
-    if(Specify_type(model_name))//if model name exists
-    {
-        ifstream modelFile;
-        string modelFile_name;
-        if(Type_list[Type_index]=="floor")
-        {
-            Texture_name = "wood";
-            Model_name = "cube";
-        }
-        else if(Type_list[Type_index]=="gate")
-        {
-            Texture_name = "color";
-            Model_name = "teapot";
-        }
-        else if(Type_list[Type_index]=="wall")
-        {
-            Texture_name = "brick";
-            Model_name = "cube";
-        }
-        else if(Type_list[Type_index]=="monster")
-        {
-            Texture_name = "color";
-            Model_name = "teapot";
-        }
-        else if(Type_list[Type_index]=="door")
-        {
-            Texture_name = "color";
-             Model_name = "knot";
-        }
-        else if(Type_list[Type_index]=="key")
-        {
-            Texture_name = "color";
-            Model_name = "sphere";
-        }
-        else if(Type_list[Type_index]=="player")
-        {
-            Texture_name = "color";
-            Model_name = "teapot";
-        }else{
-            Texture_name = "color";
-            Model_name = "teapotLowPoly";
-        }
-        Display_tag = false;//Needed to Display or not
-        return true;
-    }else{
-        return false;
-    }
-}
 bool Game_Obj::Specify_type(string name)
 {
     vector<string>::iterator index = std::find(Type_list.begin(), Type_list.end(), name);

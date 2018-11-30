@@ -16,6 +16,8 @@ private:
     vector<Game_Obj> G_objs;//save all GameObjects
     double Timer = 0;//game timer
     int player_index;
+    glm::vec3 eye_pos;
+    glm::vec3 ViewAt_vec;
 //functions
     void Add_Game_obj();
     
