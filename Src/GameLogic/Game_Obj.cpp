@@ -37,12 +37,30 @@ void Game_Obj::translate(glm::vec3 T_vec)//translate in world coordinate
 }
 void Game_Obj::local_translate(glm::vec3 T_vec)//translate in world coordinate
 {
+    glm::mat4 stash_model = Model;
     glm::vec4 x_local{1.0f,0.0f,0.0f,0},y_local{0.0f,1.0f,0.0f,0},z_local{0.0f,0.0f,1.0f,0};
     glm::vec4 x_world,y_world,z_world;
     x_world = Model*x_local;y_world = Model*y_local;z_world = Model*z_local;
     glm::vec4 vec = T_vec.x*x_world+T_vec.y*y_world+T_vec.z*z_world;
     glm::mat4 trans = glm::translate(glm::mat4(1.0f), glm::vec3(vec.x,vec.y,vec.z));
     Model =  trans *Model;
+    
+    ThreeDPOS pos((glm::vec3(Model[3])));
+    
+    if(Hashmap.find(pos)!=Hashmap.end())//collision
+    {
+        bool others = false;
+        vector<void*> tmp = Hashmap[pos];
+        for(int i=0;i<tmp.size();i++)
+        {
+            if((void*)this != tmp[i]){
+                others = true;
+                break;
+            }
+        }
+        if(others)
+            Model = stash_model;//undo the translate;
+    }
 }
 void Game_Obj::scale(glm::vec3 S_vec)
 {
@@ -72,6 +90,26 @@ bool Game_Obj::attach_component(string component_name)
 }
 void Game_Obj::Update(UI_Event &input_event)
 {
+    
+//remove this from the hashmap
+    ThreeDPOS pos((glm::vec3(Model[3])));
+    if(Hashmap.find(pos)!=Hashmap.end())//collision
+    {
+        int i=0;
+        bool exist_tag = false;
+        vector<void*> tmp = Hashmap[pos];
+        for(i=0;i<tmp.size();i++)
+            if((void*)this == tmp[i]){
+                exist_tag = true;break;
+            }
+        if(exist_tag){
+            tmp.erase(tmp.begin()+i);
+            if(tmp.size()==0)
+                Hashmap.erase(pos);
+            else
+                Hashmap[pos] = tmp;
+        }
+    }
     Game_Events G_events;
     for(int i=0;i<Comp_list.size();i++)
     {
@@ -79,6 +117,20 @@ void Game_Obj::Update(UI_Event &input_event)
         cpt=Comp_list[i];
         cpt->Update(input_event,G_events,this);
     }
+//add this to the hashmap
+    ThreeDPOS posNew((glm::vec3(Model[3])));
+    if(Hashmap.find(posNew)!=Hashmap.end())//collision
+    {
+        vector<void*> tmp = Hashmap[posNew];
+        tmp.push_back(this);
+        Hashmap[posNew] = tmp;
+    }else{
+        Hashmap[posNew] = vector<void*>{this};
+    }
+    
+    
+    
+    
 }
 Game_Obj::~Game_Obj()
 {

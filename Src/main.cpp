@@ -9,8 +9,8 @@
 #include <iostream>
 //files included
 #include "GameLogic/GameLogic.hpp"
-
 using namespace std;
+std::unordered_map<ThreeDPOS, std::vector<void*>> Hashmap;//mapping between 3D pos and GameObjs
 int main(int argc, const char * argv[]) {
     // insert code here...
     cout << "Hello, World!\n";

@@ -9,6 +9,7 @@
 #ifndef GameLogic_hpp
 #define GameLogic_hpp
 #include "../UI/UI.hpp"
+
 class GameLogic{
 private:
 //Variables
@@ -19,10 +20,8 @@ private:
     glm::vec4 eye_pos_offset;//in player's coordination
     glm::vec4 ViewAt_vector;//in player's coordination
 //functions
-    void Add_Game_obj();
-    
-    
-    void set_view();
+    void Add_Game_obj();//add new game obj
+    void set_view();//calculate view matrix based on player
     
 public:
     UI ui;
