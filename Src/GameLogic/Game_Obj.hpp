@@ -28,7 +28,7 @@ public:
     int key[3]={0,0,0};
     string Model_name;
     string Texture_name;
-    bool Display_tag;//Needed to Display or not
+    //bool Display_tag;//Needed to Display or not
     vector<Component*> Comp_list;//list of component
     glm::vec3 FaceAt,Pos,Scales;
 //basic functionalities
@@ -36,10 +36,10 @@ public:
     void translate(glm::vec3 T_vec);
     void local_rotation(glm::vec3 angles);//rotate angles for each axises
     void local_translate(glm::vec3 T_vec);
-    void scale(glm::vec3 S_vec);
+    void scale(glm::vec3 S_vec);//local scale
     glm::mat4 get_Model(){return Model;}
     void apply(glm::mat4 M4){Model = Model*M4;}//apply a mat4 to model matrix
-    
+    void set_mat(glm::mat4 M4){Model = M4;}//set model mat
     bool Specify_type(string name);//specifygameobject type
     void set_index(int index){Index = index;}//index in objects list
     ~Game_Obj();

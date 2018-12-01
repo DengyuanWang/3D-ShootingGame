@@ -17,11 +17,30 @@ class Items: public Component{
 public:
     string Items_name;
     Items();
-    void Update(Game_Events input_event);
+    virtual void Update(UI_Event &UIEvent){
+        cout<<"items"<<endl;};
 };
 class Final_gate: public Items{
     Final_gate();
-    void Update(Game_Events input_event);
+    void Update(UI_Event &UIEvent);
 };
-
+class Weapon: public Items{//weapon system
+private:
+    float Cooldown;//second
+    unsigned int LastshotTime;
+public:
+    Weapon();
+    void Update(UI_Event &UIEvent);
+};
+class Bullet: public Items{
+private:
+    float speed;//fly speed
+    glm::vec4 dir_vec;
+    unsigned int born_time;
+    float life;//exist time limit;
+public:
+    Bullet();
+    void Update(UI_Event &UIEvent);
+    bool DieBeauseOld();
+};
 #endif /* Items_hpp */

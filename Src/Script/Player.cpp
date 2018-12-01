@@ -17,12 +17,13 @@ Player::Player(){
     eye_pos_offset = glm::vec4(0.01f,0.02f,-0.25f,0);
     Component_name = "Player";
 }
-void Player::Update(UI_Event &UIEvent,void* parent)
+void Player::Update(UI_Event &UIEvent)
 {
-    update_view(UIEvent, parent);
+    update_view(UIEvent);
 }
-void Player::update_view(UI_Event &UIEvent, void* parent)
+void Player::update_view(UI_Event &UIEvent)
 {
+    Game_Events* Gptr =(Game_Events*)Gevent_list;//get game event handler
     Game_Obj* ptr;
     ptr = (Game_Obj*)parent;
     //Player controller:
@@ -49,7 +50,7 @@ void Player::update_view(UI_Event &UIEvent, void* parent)
             {
                 if((*Gobj_list_ptr)[i].get_type()=="gate")
                 {
-                    Game_Events* Gptr =(Game_Events*)Gevent_list;
+                    
                     Gptr->set_event("ReatchGate", true);
                     cout<<"you win"<<endl;
                 }
@@ -61,6 +62,12 @@ void Player::update_view(UI_Event &UIEvent, void* parent)
     float xy[2] ={-UIEvent.mouse_status[0]/500.0f,UIEvent.mouse_status[1]/500.0f};
     ptr->local_rotation(glm::vec3(0,xy[0],0));
     ViewAt_vector = glm::rotateX(ViewAt_vector,xy[1]);//rotate in model's coordinates
+
+    
+    
+    
+    
+    
 }
 bool Player::check_collision(glm::vec4 pos1,glm::vec4 pos2, glm::vec3 size1,glm::vec3 size2){
     float a_minX=pos1.x-size1.x,

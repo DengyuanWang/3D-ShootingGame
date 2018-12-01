@@ -107,6 +107,8 @@ UI_Event UI::get_input_event()//get event for keyboard input or click
             rst.set_event("Left");
         else if(keyboard_state_array[SDL_SCANCODE_D] && !keyboard_state_array[SDL_SCANCODE_A])
             rst.set_event("Right");
+        else if(keyboard_state_array[SDL_SCANCODE_SPACE])
+            rst.set_event("Shoot");
         else rst.set_event("None");
        //if(!rst.check_event("None")||X!=0||Y!=0) break;
         break;

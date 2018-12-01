@@ -15,10 +15,14 @@
 #include "../../lib/Includer.h"
 using namespace std;
 class Component{
+private:
+    
 public:
+    void* parent;//Links to GameObj
     string Component_name;
     Component();
-    virtual void Update(UI_Event &UIEvent,void* parent){
+    void set_paret(void* parent_in){parent = parent_in;};
+    virtual void Update(UI_Event &UIEvent){
         cout<<"child"<<endl;
     }
     virtual void test(){

@@ -19,7 +19,7 @@ int main(int argc, const char * argv[]) {
     Game_Events G_events;
     Gevent_list = &G_events;
     GameLogic G_logic;//init game environment and map
-
+    G_events.currentTime = SDL_GetTicks();//init timer;
     bool loop_tag = true;
     //Try to fix the problem of no display at beginning
         G_logic.ui.full_screen_switch();

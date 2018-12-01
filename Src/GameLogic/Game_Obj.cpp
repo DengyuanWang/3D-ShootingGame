@@ -11,7 +11,7 @@
 vector<string> Game_Obj::Type_list=
             { "floor","gate","wall","door","key","player","monster",
                 //new items in shooting game
-              "teleporter", "elements","weapon","treasureBox","destructibleWall",
+              "teleporter", "elements","weapon","treasureBox","destructibleWall","bullet",
                 //new monsters
               "Static_monster","Moving_monster"
             };
@@ -27,6 +27,11 @@ bool Game_Obj::Specify_type(string name)
         Type_index = (int)std::distance( Type_list.begin(), index );;//event none
         Model_name = Type_list[Type_index];
         attach_component(name);
+        if(name=="player")
+        {//add one more component for player
+            attach_component("weapon");
+        }
+        
         return true;
     }else return false;
 }
@@ -63,8 +68,13 @@ void Game_Obj::local_translate(glm::vec3 T_vec)//translate in world coordinate
 }
 void Game_Obj::scale(glm::vec3 S_vec)
 {
+    glm::vec4 x_local{1.0f,0.0f,0.0f,0},y_local{0.0f,1.0f,0.0f,0},z_local{0.0f,0.0f,1.0f,0};
+    glm::vec4 x_world,y_world,z_world;
+    x_world = Model*x_local;y_world = Model*y_local;z_world = Model*z_local;
+    glm::vec3 local_scale = glm::vec3(S_vec.x*x_world+S_vec.y*y_world+S_vec.z*z_world);
+    
     glm::mat4 modelMatrix = glm::mat4();
-    modelMatrix = glm::scale(modelMatrix, S_vec);
+    modelMatrix = glm::scale(modelMatrix, local_scale);
     Model = Model*modelMatrix;
 }
 void Game_Obj::local_rotation(glm::vec3 angles)//rotate angles for each axises in local coordinates
@@ -82,23 +92,30 @@ bool Game_Obj::attach_component(string component_name)
 {
     if(component_name=="player")
     {
-        Player *tmp = new Player;
-        Comp_list.push_back(tmp);
+        Comp_list.push_back(new Player());
+        Comp_list[Comp_list.size()-1]->parent = this;
+    }
+    if(component_name=="weapon"){
+        Comp_list.push_back(new Weapon());
+        Comp_list[Comp_list.size()-1]->parent = this;
+    }
+    if(component_name=="bullet"){
+        Comp_list.push_back(new Bullet());
+        Comp_list[Comp_list.size()-1]->parent = this;
     }
     return true;
 }
 void Game_Obj::Update(UI_Event &input_event)
 {
+    cout<<Type_list[Type_index]<<endl;
     collider_center = Model*collider_offset;
     Game_Events G_events;
     for(int i=0;i<Comp_list.size();i++)
     {
         Component* cpt;
         cpt=Comp_list[i];
-        cpt->Update(input_event,this);
+        cpt->Update(input_event);
     }
-
-    
 }
 bool Game_Obj::check_collision(glm::vec3 pos,glm::vec3 size)
 {

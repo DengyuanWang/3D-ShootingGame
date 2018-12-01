@@ -141,12 +141,25 @@ void GameLogic::Add_Game_obj()
 }
 bool GameLogic::Update(UI_Event uievent)
 {
+   
     Game_Events* Gptr=(Game_Events*)Gevent_list;
+    Gptr->lastTime = Gptr->currentTime;
+    Gptr->currentTime = SDL_GetTicks();
+    
+    if(Gptr->check_event("Erase"))
+    {
+        G_objs.erase(G_objs.begin()+Gptr->Erase_index);
+        Gptr->set_event("Erase", false);
+    }
     if(Gptr->check_event("ReatchGate"))
         return false;
 //Update all Game objs
     for(int i=0;i<G_objs.size();i++)
+    {
+        G_objs[i].Index = i;
         G_objs[i].Update(uievent);
+    }
+    
     
 //Get camera pos
     Player *tmp = (Player *)(G_objs[player_index].Comp_list[0]);

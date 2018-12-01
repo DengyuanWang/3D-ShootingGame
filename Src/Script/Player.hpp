@@ -22,8 +22,8 @@ public:
     glm::vec4 ViewAt_vector;//in player's coordination
     glm::vec4 eye_pos_offset;//in player's coordination
     Player();
-    void Update(UI_Event &UIEvent,void* parent);
-    void update_view(UI_Event &UIEvent, void* parent);
+    void Update(UI_Event &UIEvent);
+    void update_view(UI_Event &UIEvent);
     void test(){
         cout<<"test player virtual"<<endl;
     }

@@ -14,11 +14,13 @@
 using namespace std;
 class Game_Events{
 public:
+    int Erase_index;
     static vector<string> Game_Event_list;
     vector<bool> Events;
     Game_Events();
     void set_event(string eventname,bool value);
     bool check_event(string eventname);
+    unsigned int currentTime,lastTime;
 private:
     int find_event(string name);
 };
