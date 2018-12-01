@@ -15,7 +15,11 @@ using namespace std;
 class Game_Events{
 public:
     static vector<string> Game_Event_list;
-    int current_event;
-    string eventname;
+    vector<bool> Events;
+    Game_Events();
+    void set_event(string eventname,bool value);
+    bool check_event(string eventname);
+private:
+    int find_event(string name);
 };
 #endif /* Game_Events_h */

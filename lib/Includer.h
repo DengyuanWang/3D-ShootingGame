@@ -20,7 +20,7 @@
 #include "glm/gtx/rotate_vector.hpp"
 struct ThreeDPOS{
     int x,y,z;
-    ThreeDPOS(glm::vec3 in_vec): x(in_vec.x*2),y(in_vec.y*2),z(in_vec.z*2){};
+    ThreeDPOS(glm::vec3 in_vec): x(in_vec.x),y(in_vec.y),z(in_vec.z){};
     bool operator==(const ThreeDPOS& a) const
     {
         return (x == a.x && y == a.y&& z==a.z);
@@ -48,4 +48,6 @@ namespace std {
     
 }
 extern std::unordered_map<ThreeDPOS, std::vector<void*>> Hashmap;//mapping between 3D pos and GameObjs
+extern void* Gobj_list;
+extern void* Gevent_list;
 #endif /* Includer_h */

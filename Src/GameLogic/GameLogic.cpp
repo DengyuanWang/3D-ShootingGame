@@ -27,7 +27,7 @@ void GameLogic::restart()
     Status = 1;
 //load map
     //Formate:
-    //    index Objname model texture size[fx,fy,fz] position[x y z]
+    //    index Objname model texture size[fx,fy,fz] position[x y z] boxcollider[x y z] colliderpos_offset[x y z]
     string mapname = "testmap";
     string full_filename ="lib/maps/"+mapname+".txt";
     ifstream mapFile(full_filename);
@@ -44,8 +44,11 @@ void GameLogic::restart()
                     if(tmp[j]==' ') continue;
                     switch (i) {
                         case 0://index
+                            k = j;
+                            while(tmp[++j]!=' ');
                             Add_Game_obj();
-                            j++;//skip it
+                            k =atoi(tmp.substr(k,j-k).c_str());
+                            G_objs[G_objs.size()-1].set_index(k);
                             break;
                         case 1://objname
                             k = j;
@@ -82,6 +85,20 @@ void GameLogic::restart()
                             ss>>d1>>d2>>d3;
                             G_objs[G_objs.size()-1].translate(glm::vec3{d1,d2,d3});
                             break;
+                        case 6://boxcollider size
+                            k = j;
+                            while(tmp[++j]!=']');
+                            ss<<tmp.substr(k+1,j-k-1);
+                            ss>>d1>>d2>>d3;
+                            G_objs[G_objs.size()-1].collider_size = glm::vec3{d1,d2,d3};
+                            break;
+                        case 7://box collider offset
+                            k = j;
+                            while(tmp[++j]!=']');
+                            ss<<tmp.substr(k+1,j-k-1);
+                            ss>>d1>>d2>>d3;
+                            G_objs[G_objs.size()-1].collider_offset = glm::vec4{d1,d2,d3,1};
+                            break;
                         default:
                             cout<<"error map"<<endl;
                             exit(0);
@@ -98,7 +115,7 @@ void GameLogic::restart()
     }
 //reset view matrix
     set_view();
-    
+    Gobj_list = &G_objs;
 }
 void GameLogic::set_view()
 {
@@ -110,7 +127,7 @@ void GameLogic::set_view()
     glm::mat4 tmpmat = G_objs[player_index].get_Model();
     //get pose, camera is a little higher than player
     float len =sqrt(pow(tmpmat[0].x,2)+pow(tmpmat[0].y,2)+pow(tmpmat[0].z,2));
-    cout<<"x"<<tmpmat[3].x<<"y"<<tmpmat[3].y<<"z"<<tmpmat[3].z<<endl;
+    //cout<<"x"<<tmpmat[3].x<<"y"<<tmpmat[3].y<<"z"<<tmpmat[3].z<<endl;
     glm::vec4 offset = tmpmat*eye_pos_offset/len;
     glm::vec3 eye_pos = glm::vec3(tmpmat[3])+glm::vec3(offset.x,offset.y,offset.z);
     //get viewat_vector, whose length is 0.2f;
@@ -124,6 +141,9 @@ void GameLogic::Add_Game_obj()
 }
 bool GameLogic::Update(UI_Event uievent)
 {
+    Game_Events* Gptr=(Game_Events*)Gevent_list;
+    if(Gptr->check_event("ReatchGate"))
+        return false;
 //Update all Game objs
     for(int i=0;i<G_objs.size();i++)
         G_objs[i].Update(uievent);

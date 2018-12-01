@@ -11,10 +11,13 @@
 #include "GameLogic/GameLogic.hpp"
 using namespace std;
 std::unordered_map<ThreeDPOS, std::vector<void*>> Hashmap;//mapping between 3D pos and GameObjs
+void *Gobj_list = NULL;
+void *Gevent_list = NULL;
 int main(int argc, const char * argv[]) {
     // insert code here...
     cout << "Hello, World!\n";
-    
+    Game_Events G_events;
+    Gevent_list = &G_events;
     GameLogic G_logic;//init game environment and map
 
     bool loop_tag = true;

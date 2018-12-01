@@ -13,14 +13,18 @@
 using namespace std;
 class Game_Obj{
 private:
-    int Index;//index of current obj in all obj list
+
     static vector<string> Type_list;
     int Type_index;//index in Type_list
     //homogeneous matrix saved Obj info
     glm::mat4 Model;//model position rotation etc
-    int NumVerts;
 
 public:
+    int Index;//index of current obj in all obj list
+    //we assume all object use box collider;
+    glm::vec3 collider_size;
+    glm::vec4 collider_offset;
+    glm::vec4 collider_center;//relative coordinates
     int key[3]={0,0,0};
     string Model_name;
     string Texture_name;
@@ -42,9 +46,9 @@ public:
 //Specific functionalities to involve game component
     bool attach_component(string component_name);
     void Update(UI_Event &input_event);
+    bool check_collision(glm::vec3 pos,glm::vec3 size);
     
-    
-
+    string get_type(){return Type_list[Type_index];};
 };
 
 

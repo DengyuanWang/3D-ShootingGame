@@ -22,10 +22,11 @@ public:
     glm::vec4 ViewAt_vector;//in player's coordination
     glm::vec4 eye_pos_offset;//in player's coordination
     Player();
-    void Update(UI_Event &UIEvent, Game_Events &G_event,void* parent);
-    void update_view(UI_Event &UIEvent, Game_Events &G_event,void* parent);
+    void Update(UI_Event &UIEvent,void* parent);
+    void update_view(UI_Event &UIEvent, void* parent);
     void test(){
         cout<<"test player virtual"<<endl;
     }
+    bool check_collision(glm::vec4 pos1,glm::vec4 pos2, glm::vec3 size1,glm::vec3 size2);
 };
 #endif /* Player_hpp */

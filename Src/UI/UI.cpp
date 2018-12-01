@@ -108,7 +108,8 @@ UI_Event UI::get_input_event()//get event for keyboard input or click
         else if(keyboard_state_array[SDL_SCANCODE_D] && !keyboard_state_array[SDL_SCANCODE_A])
             rst.set_event("Right");
         else rst.set_event("None");
-        if(!rst.check_event("None")||X!=0||Y!=0) break;
+       //if(!rst.check_event("None")||X!=0||Y!=0) break;
+        break;
     }
     rst.mouse_status[0] = X;rst.mouse_status[1] = Y;
     return rst;

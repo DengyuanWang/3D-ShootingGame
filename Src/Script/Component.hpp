@@ -18,11 +18,14 @@ class Component{
 public:
     string Component_name;
     Component();
-    virtual void Update(UI_Event &UIEvent, Game_Events &G_event,void* parent){
+    virtual void Update(UI_Event &UIEvent,void* parent){
         cout<<"child"<<endl;
     }
     virtual void test(){
         cout<<"test virtual"<<endl;
+    }
+    virtual bool check_collision(glm::vec4 pos1,glm::vec4 pos2, glm::vec3 size1,glm::vec3 size2){
+        return false;
     }
 };
 #endif /* Component_hpp */
