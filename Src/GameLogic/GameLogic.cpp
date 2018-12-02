@@ -69,14 +69,21 @@ bool GameLogic::Update(UI_Event uievent)
     Game_Events* Gptr=(Game_Events*)Gevent_list;
     Gptr->lastTime = Gptr->currentTime;
     Gptr->currentTime = SDL_GetTicks();
-    
-    if(Gptr->check_event("Erase"))
-    {
-        G_objs.erase(G_objs.begin()+Gptr->Erase_index);
-        Gptr->set_event("Erase", false);
-    }
     if(Gptr->check_event("ReatchGate"))
         return false;
+    if(Gptr->check_event("Erase"))
+    {
+        erase_objs();
+        Gptr->set_event("Erase", false);
+
+    }
+    
+    if(Gptr->check_event("new_bullet"))
+    {
+        add_bullets();
+        Gptr->set_event("new_bullet", false);
+        set_indices();
+    }
 //Update all Game objs
     set_indices();
     for(int i=0;i<G_objs.size();i++)
@@ -122,6 +129,38 @@ void GameLogic::set_indices()//reset all index
             player_index = i;
     }
 }
+void GameLogic::erase_objs()
+{
+    Game_Events* Gptr=(Game_Events*)Gevent_list;
+    sort(Gptr->Erase_index.begin(),Gptr->Erase_index.end());//[0 2 1]->[0 1 2]
+    while(Gptr->Erase_index.size()!=0)
+    {
+        int index =  Gptr->Erase_index[Gptr->Erase_index.size()-1];
+        G_objs.erase(G_objs.begin()+index);
+        Gptr->Erase_index.pop_back();
+    }
+    set_indices();
+}
+void GameLogic::add_bullets()
+{
+    Game_Events* Gptr=(Game_Events*)Gevent_list;
+    int added_count = 0;
+    while(Gptr->new_bullet_list.size()!=0)
+    {
+        int index = *Gptr->new_bullet_list[Gptr->new_bullet_list.size()-1];
+        stringstream ss;
+//index Objname model texture size[xyz] position[xyz] boxcollider[xyz] colliderpos_offset[xyz]
+        ss<<"0 "<<"bullet "<<"sphere "<<"color "<<"[.2 .2 .2] "
+        <<"[0 0 0] "<<"[.2 .2 .2] "<<"[0 0 0]";
+        decode_cmd(ss.str());
+        added_count+=1;
+        index += added_count;
+        G_objs[0].set_mat(G_objs[index].get_Model());
+        Gptr->new_bullet_list[Gptr->new_bullet_list.size()-1]=NULL;
+        Gptr->new_bullet_list.pop_back();
+    }
+    set_indices();
+}
 void GameLogic::decode_cmd(string in)
 {
     string tmp = in;
@@ -145,7 +184,7 @@ void GameLogic::decode_cmd(string in)
                     k = j;
                     while(tmp[++j]!=' ');
                     //set type
-                    G_objs[0].Specify_type(tmp.substr(k,j-k));
+                     G_objs[0].Specify_type(tmp.substr(k,j-k));
                     cout<<tmp.substr(k,j-k)<<endl;
                     if(tmp.substr(k,j-k)=="player")
                         player_tag = true;

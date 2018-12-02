@@ -15,7 +15,7 @@ vector<string> Game_Events::Game_Event_list={
     "ReatchGate",
     //other event
     "Create_enemies","Pumpt_textbox","Hide_textbox","Block_retreat_way",
-    "Erase"
+    "Erase","new_bullet"
     };
 Game_Events::Game_Events()
 {

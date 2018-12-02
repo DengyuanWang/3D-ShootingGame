@@ -14,7 +14,8 @@
 using namespace std;
 class Game_Events{
 public:
-    int Erase_index;
+    vector<int> Erase_index;
+    vector<int*> new_bullet_list;//save parent index
     static vector<string> Game_Event_list;
     vector<bool> Events;
     Game_Events();

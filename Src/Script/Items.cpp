@@ -29,20 +29,13 @@ void Weapon::Update(UI_Event &uievent,void* ptr_in)
         LastshotTime = Gptr->currentTime;
         cout<<"shoot"<<endl;
         //create bullet obj
-        (*Gobj_list_ptr).push_back(Game_Obj());
-        (*Gobj_list_ptr)[Gobj_list_ptr->size()-1].Index = (*Gobj_list_ptr)[Gobj_list_ptr->size()-2].Index+1;
-        (*Gobj_list_ptr)[Gobj_list_ptr->size()-1].Specify_type("bullet");
-        (*Gobj_list_ptr)[Gobj_list_ptr->size()-1].Model_name = "sphere";
-        (*Gobj_list_ptr)[Gobj_list_ptr->size()-1].Texture_name = "color";
-        (*Gobj_list_ptr)[Gobj_list_ptr->size()-1].scale(glm::vec3{0.1,0.1,0.2});
-        (*Gobj_list_ptr)[Gobj_list_ptr->size()-1].set_mat(Gobj_ptr->get_Model());
-        (*Gobj_list_ptr)[Gobj_list_ptr->size()-1].collider_size = glm::vec3{0.1f,0.1f,0.2f};
-        (*Gobj_list_ptr)[Gobj_list_ptr->size()-1].collider_offset = glm::vec4{0,0,0,1};
+        Gptr->set_event("new_bullet", true);
+        Gptr->new_bullet_list.push_back(&Gobj_ptr->Index);
     }
 }
 Bullet::Bullet(){
     Game_Events *Gptr = (Game_Events*)Gevent_list;
-    speed = .2;
+    speed = .04;
     born_time = Gptr->currentTime;
     life = 2;
 }
@@ -54,7 +47,7 @@ void Bullet::Update(UI_Event &uievent,void* ptr_in)
     if(DieBeauseOld())
     {
         Gptr->set_event("Erase", true);
-        Gptr->Erase_index = Gobj_ptr->Index;
+        Gptr->Erase_index.push_back(Gobj_ptr->Index);
         return;
     }
     dir_vec= Gobj_ptr->get_Model()*glm::vec4{0,0,1,0};//direction equals to parent's face direction

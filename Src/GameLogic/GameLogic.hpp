@@ -24,6 +24,8 @@ private:
     void set_view();//calculate view matrix based on player
     void decode_cmd(string in);
     void set_indices();
+    void erase_objs();
+    void add_bullets();
 public:
     UI ui;
     GameLogic();
