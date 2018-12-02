@@ -18,7 +18,7 @@ class Component{
 private:
     
 public:
-    int parent_index;//Links to GameObj
+    int* parent_index;//Links to GameObj
     string Component_name;
     Component();
     virtual void Update(UI_Event &UIEvent,void* ptr_in){

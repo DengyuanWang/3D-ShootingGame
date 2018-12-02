@@ -46,7 +46,7 @@ public:
 //Specific functionalities to involve game component
     bool attach_component(string component_name);
     void Update(UI_Event &input_event);
-    bool check_collision(glm::vec3 pos,glm::vec3 size);
+    bool check_collision(Game_Obj *ptr);//check collision with other Game obj
     
     string get_type(){return Type_list[Type_index];};
 };

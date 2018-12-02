@@ -11,7 +11,7 @@
 vector<string> Game_Events::Game_Event_list={
     //player's event
     "Player_forward","Player_backward","Player_left","Player_right",
-    "View_up","View_down","View_left","View_right",
+    "View_up","View_down","View_left","View_right","Player_shoot",
     "ReatchGate",
     //other event
     "Create_enemies","Pumpt_textbox","Hide_textbox","Block_retreat_way",

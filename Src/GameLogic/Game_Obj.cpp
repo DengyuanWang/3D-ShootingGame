@@ -13,7 +13,7 @@ vector<string> Game_Obj::Type_list=
                 //new items in shooting game
               "teleporter", "elements","weapon","treasureBox","destructibleWall","bullet",
                 //new monsters
-              "Static_monster","Moving_monster"
+              "static_monster","moving_monster"
             };
 Game_Obj::Game_Obj()
 {
@@ -27,8 +27,8 @@ bool Game_Obj::Specify_type(string name)
         Type_index = (int)std::distance( Type_list.begin(), index );;//event none
         Model_name = Type_list[Type_index];
         attach_component(name);
-        if(name=="player")
-        {//add one more component for player
+        if(name=="player"||name=="static_monster")
+        {//add one more component for player and static_monster
             attach_component("weapon");
         }
         
@@ -49,22 +49,6 @@ void Game_Obj::local_translate(glm::vec3 T_vec)//translate in world coordinate
     glm::vec4 vec = T_vec.x*x_world+T_vec.y*y_world+T_vec.z*z_world;
     glm::mat4 trans = glm::translate(glm::mat4(1.0f), glm::vec3(vec.x,vec.y,vec.z));
     Model =  trans *Model;
-/*
-//check collision
-    glm::vec3 pos((glm::vec3(Model[3])));
-    vector<Game_Obj> *ptr;
-    ptr =(vector<Game_Obj> *)Gobj_list;
-    for(int i=0;i<ptr->size();i++)
-    {
-        if(((*ptr)[i].Index)!=this->Index//not self
-           &&(*ptr)[i].check_collision(pos, collider_size))//collide with others
-        {
-            if(Type_list[ (*ptr)[i].Type_index]=="gate")
-            {
-                cout<<"you win"<<endl;
-            }
-            Model = stash_model;//undo the translate;
-        }*/
 }
 void Game_Obj::scale(glm::vec3 S_vec)
 {
@@ -93,16 +77,21 @@ bool Game_Obj::attach_component(string component_name)
     if(component_name=="player")
     {
         Comp_list.push_back(new Player());
-        Comp_list[Comp_list.size()-1]->parent_index = Index;
+        Comp_list[Comp_list.size()-1]->parent_index = &Index;
         cout<<"ptr:"<<this<<endl;
     }
     if(component_name=="weapon"){
         Comp_list.push_back(new Weapon());
-        Comp_list[Comp_list.size()-1]->parent_index = Index;
+        Comp_list[Comp_list.size()-1]->parent_index = &Index;
     }
     if(component_name=="bullet"){
         Comp_list.push_back(new Bullet());
-        Comp_list[Comp_list.size()-1]->parent_index = Index;
+        Comp_list[Comp_list.size()-1]->parent_index = &Index;
+    }
+    if(component_name=="static_monster")
+    {
+        Comp_list.push_back(new Static_M());
+        Comp_list[Comp_list.size()-1]->parent_index = &Index;
     }
     return true;
 }
@@ -118,27 +107,35 @@ void Game_Obj::Update(UI_Event &input_event)
         cpt->Update(input_event,this);
     }
 }
-bool Game_Obj::check_collision(glm::vec3 pos,glm::vec3 size)
+bool Game_Obj::check_collision(Game_Obj *ptr)//check collision with other Game obj
 {
-    glm::vec4 point = glm::vec4{pos.x,pos.y,pos.z,1};
-    float a_minX=point.x-size.x,
-            a_minY=point.y-size.y,
-            a_minZ=point.z-size.z,
-            a_maxX=point.x+size.x,
-            a_maxY=point.y+size.y,
-            a_maxZ=point.z+size.z;
-    float b_minX=collider_center.x-collider_size.x,
-            b_minY=collider_center.y-collider_size.y,
-            b_minZ=collider_center.z-collider_size.z,
-            b_maxX=collider_center.x+collider_size.x,
-            b_maxY=collider_center.y+collider_size.y,
-            b_maxZ=collider_center.z+collider_size.z;
-   if ( (a_minX <= b_maxX && a_maxX >= b_minX) &&
-        (a_minY <= b_maxY && a_maxY >= b_minY) &&
-        (a_minZ <= b_maxZ && a_maxZ >= b_minZ))
-       return true;
-   else return false;
+    glm::mat4 M4 = ptr->get_Model();//get model;
+    glm::vec4 center= ptr->collider_offset;
+    glm::vec3 size = ptr->collider_size;
+    vector<glm::vec4> points;
+    points.push_back(center+glm::vec4(size.x,size.y,size.z,0));//+++
+    points.push_back(center+glm::vec4(size.x,size.y,-size.z,0));//++-
+    points.push_back(center+glm::vec4(size.x,-size.y,size.z,0));//+-+
+    points.push_back(center+glm::vec4(size.x,-size.y,-size.z,0));//+--
+    points.push_back(center+glm::vec4(-size.x,size.y,size.z,0));//-++
+    points.push_back(center+glm::vec4(-size.x,size.y,-size.z,0));//-+-
+    points.push_back(center+glm::vec4(-size.x,-size.y,size.z,0));//--+
+    points.push_back(center+glm::vec4(-size.x,-size.y,-size.z,0));//---
+    for(int i=0;i<points.size();i++)
+    {
+        //convert to world coordinates
+        points[i] = M4*points[i];
+        //convert to current obj's local coordinates
+        points[i] = glm::inverse(Model)*points[i];
+        //check if collide
+        points[i]  = points[i] - collider_offset;
+        if(points[i].x>-collider_size.x&&points[i].x<collider_size.x&&
+           points[i].y>-collider_size.y&&points[i].y<collider_size.y&&
+           points[i].z>-collider_size.z&&points[i].z<collider_size.z)
+            return true;
+    }
     
+    return false;
 }
 Game_Obj::~Game_Obj()
 {

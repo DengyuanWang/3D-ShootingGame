@@ -20,14 +20,17 @@ public:
     float Speed;//default as 1
     vector<string> Abilities;//default as "walk"
     Monster();
-    void Update(Game_Events input_event);
+    virtual void Update(UI_Event &UIEvent,void* ptr_in){
+        cout<<"Monsters"<<endl;};
 };
 class Static_M: public Monster{
+public:
     Static_M();
-    void Update(Game_Events input_event);
+    void Update(UI_Event &UIEvent, void *ptr_in);
 };
 class Moving_M: public Monster{
+public:
     Moving_M();
-    void Update(Game_Events input_event);
+    void Update(UI_Event &UIEvent, void *ptr_in);
 };
 #endif /* Monster_hpp */

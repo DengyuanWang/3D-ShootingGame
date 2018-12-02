@@ -31,24 +31,36 @@ void Player::update_view(UI_Event &UIEvent,void* ptr_in)
     
     float step = Speed*(Gptr->currentTime-Gptr->lastTime)/1000.0;
     glm::vec3 move_vec{0,0,0};
-    if(UIEvent.check_event("Up"))
+    if(UIEvent.check_event("Up")){
         move_vec +=glm::vec3{0,0,1};
-    if(UIEvent.check_event("Down"))
+        UIEvent.reset_event("UP");
+    }
+    if(UIEvent.check_event("Down")){
         move_vec +=glm::vec3{0,0,-1};
-    if(UIEvent.check_event("Left"))
+        UIEvent.reset_event("Down");
+    }
+    if(UIEvent.check_event("Left")){
         move_vec +=glm::vec3{1,0,0};
-    if(UIEvent.check_event("Right"))
+        UIEvent.reset_event("Left");
+    }
+    if(UIEvent.check_event("Right")){
         move_vec +=glm::vec3{-1,0,0};
+        UIEvent.reset_event("Right");
+    }
     if(abs(move_vec.x)+abs(move_vec.y)+abs(move_vec.z)>0.01)
     {
+        bool move_allow = true;
+        glm::mat4 tmp_mat = ptr->get_Model();
         ptr->local_translate(glm::normalize(move_vec)*step);
         //check collision
         vector<Game_Obj> *Gobj_list_ptr;
         Gobj_list_ptr =(vector<Game_Obj> *)Gobj_list;
         for(int i=0;i<Gobj_list_ptr->size();i++)
         {
+            //check_collision(ptr->collider_center,(*Gobj_list_ptr)[i].collider_center,
+            //ptr->collider_size,(*Gobj_list_ptr)[i].collider_size)
             if(((*Gobj_list_ptr)[i].Index)!=ptr->Index//not self
-               &&check_collision(ptr->collider_center,(*Gobj_list_ptr)[i].collider_center,ptr->collider_size,(*Gobj_list_ptr)[i].collider_size))//collide with others
+               &&(*Gobj_list_ptr)[i].check_collision(ptr))//collide with others
             {
                 if((*Gobj_list_ptr)[i].get_type()=="gate")
                 {
@@ -56,16 +68,16 @@ void Player::update_view(UI_Event &UIEvent,void* ptr_in)
                     Gptr->set_event("ReatchGate", true);
                     cout<<"you win"<<endl;
                 }
-                ptr->local_translate(-glm::normalize(move_vec)*step);
+                move_allow = false;
             }
         }
+        if(move_allow != true)
+            ptr->set_mat(tmp_mat);
     }
     //change view angle
     float xy[2] ={-UIEvent.mouse_status[0]/500.0f,UIEvent.mouse_status[1]/500.0f};
     ptr->local_rotation(glm::vec3(0,xy[0],0));
     ViewAt_vector = glm::rotateX(ViewAt_vector,xy[1]);//rotate in model's coordinates
-
-    
     /*
      1. the camera pos is at a const offset: (0.01f,0.05f,-0.1f) of the player's model
      2. the view direction is a vector in yz plane of player's local coordinate:
@@ -81,10 +93,11 @@ void Player::update_view(UI_Event &UIEvent,void* ptr_in)
     glm::vec4 View_vec = tmpmat*ViewAt_vector;
     //calculate view_matrix;
     view_matrix = glm::lookAt(eye_pos-glm::vec3(View_vec.x,View_vec.y,View_vec.z), eye_pos, glm::vec3{0,1,0});
-    
-    
-    
-    
+    if(UIEvent.check_event("Shoot"))
+    {
+        Gptr->set_event("Player_shoot", true);
+        UIEvent.reset_event("Shoot");
+    }
 }
 bool Player::check_collision(glm::vec4 pos1,glm::vec4 pos2, glm::vec3 size1,glm::vec3 size2){
     float a_minX=pos1.x-size1.x,

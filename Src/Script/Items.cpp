@@ -23,7 +23,7 @@ void Weapon::Update(UI_Event &uievent,void* ptr_in)
     Game_Obj* Gobj_ptr = (Game_Obj*)ptr_in;
     vector<Game_Obj> *Gobj_list_ptr;
     Gobj_list_ptr =(vector<Game_Obj> *)Gobj_list;
-    if(uievent.check_event("Shoot")
+    if(Gptr->check_event("Player_shoot")
        && Gptr->currentTime>LastshotTime+Cooldown*1000)
     {
         LastshotTime = Gptr->currentTime;
@@ -31,6 +31,7 @@ void Weapon::Update(UI_Event &uievent,void* ptr_in)
         //create bullet obj
         Gptr->set_event("new_bullet", true);
         Gptr->new_bullet_list.push_back(&Gobj_ptr->Index);
+        Gptr->set_event("Player_shoot",false);
     }
 }
 Bullet::Bullet(){
@@ -51,10 +52,7 @@ void Bullet::Update(UI_Event &uievent,void* ptr_in)
         return;
     }
     dir_vec= Gobj_ptr->get_Model()*glm::vec4{0,0,1,0};//direction equals to parent's face direction
-    glm::vec3 t1,t2;
-    t1 = glm::vec3(Gobj_ptr->get_Model()[3]);
     Gobj_ptr->translate(glm::normalize(glm::vec3{dir_vec})*speed);
-    t2 = glm::vec3(Gobj_ptr->get_Model()[3]);
     cout<<"move"<<endl;
 }
 bool Bullet::DieBeauseOld(){

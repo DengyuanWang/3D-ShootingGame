@@ -7,3 +7,41 @@
 //
 
 #include "Monster.hpp"
+#include "../GameLogic/Game_Obj.hpp"
+Monster::Monster(){
+    Death_tag = false;//default as false
+    Health = 1;//0~100
+    Speed = 0;//default as 1
+    //vector<string> Abilities;//default as "walk"
+}
+Static_M::Static_M(){
+    
+}
+void Static_M::Update(UI_Event &UIEvent, void *ptr_in){
+    Game_Events* Gptr =(Game_Events*)Gevent_list;//get game event handler
+    Game_Obj* ptr =(Game_Obj*)ptr_in;
+    vector<Game_Obj> *Gobj_list_ptr;
+    Gobj_list_ptr =(vector<Game_Obj> *)Gobj_list;
+    for(int i=0;i<Gobj_list_ptr->size();i++)
+    {
+        if(((*Gobj_list_ptr)[i].Index)!=ptr->Index//not self
+           &&check_collision(ptr->collider_center,(*Gobj_list_ptr)[i].collider_center,ptr->collider_size,(*Gobj_list_ptr)[i].collider_size))//collide with others
+        {
+            if((*Gobj_list_ptr)[i].get_type()=="bullet")//collide with bullet
+            {
+                Bullet *tmpptr = (Bullet*)(*Gobj_list_ptr)[i].Comp_list[0];
+                if(parent_index!=tmpptr->parent_index)//not self bullet
+                {
+                    if((*Gobj_list_ptr)[*(tmpptr->parent_index)].get_type()=="player")
+                        //player's bullet
+                    {
+                        Gptr->set_event("Erase", true);
+                        Gptr->Erase_index.push_back(ptr->Index);//kill self
+                        Gptr->Erase_index.push_back(i);//erase bullet
+                        return;
+                    }
+                }
+            }
+        }
+    }
+}
