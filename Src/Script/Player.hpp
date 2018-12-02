@@ -21,9 +21,10 @@ public:
     vector<string> Abilities;//default as "walk"
     glm::vec4 ViewAt_vector;//in player's coordination
     glm::vec4 eye_pos_offset;//in player's coordination
+    glm::mat4 view_matrix;
     Player();
-    void Update(UI_Event &UIEvent);
-    void update_view(UI_Event &UIEvent);
+    void Update(UI_Event &UIEvent, void *ptr_in);
+    void update_view(UI_Event &UIEvent, void*ptr_in);
     void test(){
         cout<<"test player virtual"<<endl;
     }

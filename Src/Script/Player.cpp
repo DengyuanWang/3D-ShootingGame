@@ -11,24 +11,26 @@
 Player::Player(){
     Death_tag = false;//default as false
     Health = 1;//0~100
-    Speed = 1;//default as 1
+    Speed = 10;//default as 1
     Abilities.push_back("Walk");//default as "walk"
     ViewAt_vector = glm::vec4(0,0,0.2f,0);
     eye_pos_offset = glm::vec4(0.01f,0.02f,-0.25f,0);
     Component_name = "Player";
 }
-void Player::Update(UI_Event &UIEvent)
+void Player::Update(UI_Event &UIEvent,void* ptr_in)
 {
-    update_view(UIEvent);
+    update_view(UIEvent,ptr_in);
 }
-void Player::update_view(UI_Event &UIEvent)
+void Player::update_view(UI_Event &UIEvent,void* ptr_in)
 {
     Game_Events* Gptr =(Game_Events*)Gevent_list;//get game event handler
     Game_Obj* ptr;
-    ptr = (Game_Obj*)parent;
+    ptr = (Game_Obj*)ptr_in;
     //Player controller:
     //move player
-    float step = 0.05;glm::vec3 move_vec{0,0,0};
+    
+    float step = Speed*(Gptr->currentTime-Gptr->lastTime)/1000.0;
+    glm::vec3 move_vec{0,0,0};
     if(UIEvent.check_event("Up"))
         move_vec +=glm::vec3{0,0,1};
     if(UIEvent.check_event("Down"))
@@ -64,6 +66,21 @@ void Player::update_view(UI_Event &UIEvent)
     ViewAt_vector = glm::rotateX(ViewAt_vector,xy[1]);//rotate in model's coordinates
 
     
+    /*
+     1. the camera pos is at a const offset: (0.01f,0.05f,-0.1f) of the player's model
+     2. the view direction is a vector in yz plane of player's local coordinate:
+     notice that the up vector is always constant: [0 1 0];
+     */
+    glm::mat4 tmpmat = ptr->get_Model();
+    //get pose, camera is a little higher than player
+    float len =sqrt(pow(tmpmat[0].x,2)+pow(tmpmat[0].y,2)+pow(tmpmat[0].z,2));
+    //cout<<"x"<<tmpmat[3].x<<"y"<<tmpmat[3].y<<"z"<<tmpmat[3].z<<endl;
+    glm::vec4 offset = tmpmat*eye_pos_offset/len;
+    glm::vec3 eye_pos = glm::vec3(tmpmat[3])+glm::vec3(offset.x,offset.y,offset.z);
+    //get viewat_vector, whose length is 0.2f;
+    glm::vec4 View_vec = tmpmat*ViewAt_vector;
+    //calculate view_matrix;
+    view_matrix = glm::lookAt(eye_pos-glm::vec3(View_vec.x,View_vec.y,View_vec.z), eye_pos, glm::vec3{0,1,0});
     
     
     

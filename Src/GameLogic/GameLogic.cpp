@@ -34,87 +34,10 @@ void GameLogic::restart()
     string tmp;
     while(getline(mapFile,tmp))
     {
-        if(tmp[0]=='#') continue;
-        else{
-            bool player_tag = false;
-            //index,objname,model,texture,size,position;
-                for(int i=0,j = 0;j<tmp.length();j++)
-                {
-                    int k;stringstream ss;float d1,d2,d3;
-                    if(tmp[j]==' ') continue;
-                    switch (i) {
-                        case 0://index
-                            k = j;
-                            while(tmp[++j]!=' ');
-                            Add_Game_obj();
-                            k =atoi(tmp.substr(k,j-k).c_str());
-                            G_objs[G_objs.size()-1].set_index(k);
-                            break;
-                        case 1://objname
-                            k = j;
-                            while(tmp[++j]!=' ');
-                            //set type
-                            G_objs[G_objs.size()-1].Specify_type(tmp.substr(k,j-k));
-                            cout<<tmp.substr(k,j-k)<<endl;
-                            if(tmp.substr(k,j-k)=="player")
-                                player_tag = true;
-                            break;
-                        case 2://model
-                            k = j;
-                            while(tmp[++j]!=' ');
-                            //set model
-                            G_objs[G_objs.size()-1].Model_name = tmp.substr(k,j-k);
-                            break;
-                        case 3://texture
-                            k = j;
-                            while(tmp[++j]!=' ');
-                            //set texture
-                            G_objs[G_objs.size()-1].Texture_name = tmp.substr(k,j-k);
-                            break;
-                        case 4://size
-                            k = j;
-                            while(tmp[++j]!=']');
-                            ss<<tmp.substr(k+1,j-k-1);
-                            ss>>d1>>d2>>d3;
-                            G_objs[G_objs.size()-1].scale(glm::vec3{d1,d2,d3});
-                            break;
-                        case 5://position
-                            k = j;
-                            while(tmp[++j]!=']');
-                            ss<<tmp.substr(k+1,j-k-1);
-                            ss>>d1>>d2>>d3;
-                            G_objs[G_objs.size()-1].translate(glm::vec3{d1,d2,d3});
-                            break;
-                        case 6://boxcollider size
-                            k = j;
-                            while(tmp[++j]!=']');
-                            ss<<tmp.substr(k+1,j-k-1);
-                            ss>>d1>>d2>>d3;
-                            G_objs[G_objs.size()-1].collider_size = glm::vec3{d1,d2,d3};
-                            break;
-                        case 7://box collider offset
-                            k = j;
-                            while(tmp[++j]!=']');
-                            ss<<tmp.substr(k+1,j-k-1);
-                            ss>>d1>>d2>>d3;
-                            G_objs[G_objs.size()-1].collider_offset = glm::vec4{d1,d2,d3,1};
-                            break;
-                        default:
-                            cout<<"error map"<<endl;
-                            exit(0);
-                            break;
-                    }
-                    i++;
-                    if(player_tag)//recoard player index
-                    {
-                        player_index =(int) G_objs.size()-1;
-                        player_tag = false;
-                    }
-                }
-        }
+        decode_cmd(tmp);
     }
 //reset view matrix
-    set_view();
+    //set_view();
     Gobj_list = &G_objs;
 }
 void GameLogic::set_view()
@@ -135,9 +58,10 @@ void GameLogic::set_view()
     //calculate view_matrix;
     ui.View_matrix = glm::lookAt(eye_pos-glm::vec3(View_vec.x,View_vec.y,View_vec.z), eye_pos, glm::vec3{0,1,0});
 }
-void GameLogic::Add_Game_obj()
+void GameLogic::Add_Game_obj()//add at head
 {
-    G_objs.push_back(Game_Obj());
+    //G_objs.push_back();
+    G_objs.insert(G_objs.begin(), Game_Obj());
 }
 bool GameLogic::Update(UI_Event uievent)
 {
@@ -154,18 +78,24 @@ bool GameLogic::Update(UI_Event uievent)
     if(Gptr->check_event("ReatchGate"))
         return false;
 //Update all Game objs
+    set_indices();
     for(int i=0;i<G_objs.size();i++)
-    {
-        G_objs[i].Index = i;
         G_objs[i].Update(uievent);
-    }
     
     
 //Get camera pos
+    
     Player *tmp = (Player *)(G_objs[player_index].Comp_list[0]);
-    ViewAt_vector = tmp->ViewAt_vector;
-    eye_pos_offset= tmp->eye_pos_offset;
-    set_view();
+    glm::mat4 vmat =tmp->view_matrix;
+    ui.View_matrix =vmat;
+    /*
+    float angle =  M_PI/2*(Gptr->currentTime-Gptr->lastTime)/1000.0;
+    G_objs[player_index].local_rotation(glm::vec3(0,angle,0));
+    glm::mat4 r = G_objs[player_index].get_Model();
+    r = glm::translate(r, glm::vec3(0,0,2));
+    glm::mat4 vmat2 = glm::inverse(r);
+    ui.View_matrix = glm::inverse(r);
+    */
 //Draw models
     vector<string> model_names,textures;
     vector<glm::mat4> model_matrixs;
@@ -182,4 +112,90 @@ bool GameLogic::Update(UI_Event uievent)
 
 GameLogic::~GameLogic(){
     
+}
+void GameLogic::set_indices()//reset all index
+{
+    for(int i=0;i<G_objs.size();i++)
+    {
+         G_objs[i].Index = i;
+        if(G_objs[i].get_type()=="player")
+            player_index = i;
+    }
+}
+void GameLogic::decode_cmd(string in)
+{
+    string tmp = in;
+    if(tmp[0]=='#') return;
+    else{
+        bool player_tag = false;
+        //index,objname,model,texture,size,position;
+        for(int i=0,j = 0;j<tmp.length();j++)
+        {
+            int k;stringstream ss;float d1,d2,d3;
+            if(tmp[j]==' ') continue;
+            switch (i) {
+                case 0://index
+                    k = j;
+                    while(tmp[++j]!=' ');
+                    Add_Game_obj();
+                    k =atoi(tmp.substr(k,j-k).c_str());
+                    G_objs[0].set_index(k);
+                    break;
+                case 1://objname
+                    k = j;
+                    while(tmp[++j]!=' ');
+                    //set type
+                    G_objs[0].Specify_type(tmp.substr(k,j-k));
+                    cout<<tmp.substr(k,j-k)<<endl;
+                    if(tmp.substr(k,j-k)=="player")
+                        player_tag = true;
+                    break;
+                case 2://model
+                    k = j;
+                    while(tmp[++j]!=' ');
+                    //set model
+                    G_objs[0].Model_name = tmp.substr(k,j-k);
+                    break;
+                case 3://texture
+                    k = j;
+                    while(tmp[++j]!=' ');
+                    //set texture
+                    G_objs[0].Texture_name = tmp.substr(k,j-k);
+                    break;
+                case 4://size
+                    k = j;
+                    while(tmp[++j]!=']');
+                    ss<<tmp.substr(k+1,j-k-1);
+                    ss>>d1>>d2>>d3;
+                    G_objs[0].scale(glm::vec3{d1,d2,d3});
+                    break;
+                case 5://position
+                    k = j;
+                    while(tmp[++j]!=']');
+                    ss<<tmp.substr(k+1,j-k-1);
+                    ss>>d1>>d2>>d3;
+                    G_objs[0].translate(glm::vec3{d1,d2,d3});
+                    break;
+                case 6://boxcollider size
+                    k = j;
+                    while(tmp[++j]!=']');
+                    ss<<tmp.substr(k+1,j-k-1);
+                    ss>>d1>>d2>>d3;
+                    G_objs[0].collider_size = glm::vec3{d1,d2,d3};
+                    break;
+                case 7://box collider offset
+                    k = j;
+                    while(tmp[++j]!=']');
+                    ss<<tmp.substr(k+1,j-k-1);
+                    ss>>d1>>d2>>d3;
+                    G_objs[0].collider_offset = glm::vec4{d1,d2,d3,1};
+                    break;
+                default:
+                    cout<<"error map"<<endl;
+                    exit(0);
+                    break;
+            }
+            i++;
+        }
+    }
 }

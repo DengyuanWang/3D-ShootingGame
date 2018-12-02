@@ -16,11 +16,11 @@ Weapon::Weapon(){
     Items_name = "Weapon";
     LastshotTime = 0;
 }
-void Weapon::Update(UI_Event &uievent)
+void Weapon::Update(UI_Event &uievent,void* ptr_in)
 {
     //get handlers
     Game_Events *Gptr = (Game_Events*)Gevent_list;
-    Game_Obj* Gobj_ptr = (Game_Obj*)parent;
+    Game_Obj* Gobj_ptr = (Game_Obj*)ptr_in;
     vector<Game_Obj> *Gobj_list_ptr;
     Gobj_list_ptr =(vector<Game_Obj> *)Gobj_list;
     if(uievent.check_event("Shoot")
@@ -46,11 +46,11 @@ Bullet::Bullet(){
     born_time = Gptr->currentTime;
     life = 2;
 }
-void Bullet::Update(UI_Event &uievent)
+void Bullet::Update(UI_Event &uievent,void* ptr_in)
 {
     Game_Events *Gptr;Gptr = (Game_Events*)Gevent_list;
     Game_Obj* Gobj_ptr;
-    Gobj_ptr = (Game_Obj*)parent;
+    Gobj_ptr = (Game_Obj*)ptr_in;
     if(DieBeauseOld())
     {
         Gptr->set_event("Erase", true);

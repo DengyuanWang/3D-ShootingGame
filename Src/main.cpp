@@ -24,6 +24,7 @@ int main(int argc, const char * argv[]) {
     //Try to fix the problem of no display at beginning
         G_logic.ui.full_screen_switch();
         G_logic.ui.full_screen_switch();
+    
     while(loop_tag)
     {
         UI_Event ui_event = G_logic.ui.get_input_event();

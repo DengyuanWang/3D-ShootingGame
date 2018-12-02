@@ -132,6 +132,7 @@ bool UI::Draw(vector<string> model_names,vector<glm::mat4> model_matrixs,vector<
     gui_gl.clear_screen();
     for(int i=0;i<model_names.size();i++)
     {
+        
         if(!gui_gl.draw_model(View_matrix,model_matrixs[i],model_names[i],textures[i]))
         {
             cout<<"draw model fail"<<i<<endl;

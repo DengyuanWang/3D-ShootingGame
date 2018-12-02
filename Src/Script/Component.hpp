@@ -18,11 +18,10 @@ class Component{
 private:
     
 public:
-    void* parent;//Links to GameObj
+    int parent_index;//Links to GameObj
     string Component_name;
     Component();
-    void set_paret(void* parent_in){parent = parent_in;};
-    virtual void Update(UI_Event &UIEvent){
+    virtual void Update(UI_Event &UIEvent,void* ptr_in){
         cout<<"child"<<endl;
     }
     virtual void test(){

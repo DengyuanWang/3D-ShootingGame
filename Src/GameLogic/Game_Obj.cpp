@@ -93,15 +93,16 @@ bool Game_Obj::attach_component(string component_name)
     if(component_name=="player")
     {
         Comp_list.push_back(new Player());
-        Comp_list[Comp_list.size()-1]->parent = this;
+        Comp_list[Comp_list.size()-1]->parent_index = Index;
+        cout<<"ptr:"<<this<<endl;
     }
     if(component_name=="weapon"){
         Comp_list.push_back(new Weapon());
-        Comp_list[Comp_list.size()-1]->parent = this;
+        Comp_list[Comp_list.size()-1]->parent_index = Index;
     }
     if(component_name=="bullet"){
         Comp_list.push_back(new Bullet());
-        Comp_list[Comp_list.size()-1]->parent = this;
+        Comp_list[Comp_list.size()-1]->parent_index = Index;
     }
     return true;
 }
@@ -114,7 +115,7 @@ void Game_Obj::Update(UI_Event &input_event)
     {
         Component* cpt;
         cpt=Comp_list[i];
-        cpt->Update(input_event);
+        cpt->Update(input_event,this);
     }
 }
 bool Game_Obj::check_collision(glm::vec3 pos,glm::vec3 size)

@@ -17,12 +17,12 @@ class Items: public Component{
 public:
     string Items_name;
     Items();
-    virtual void Update(UI_Event &UIEvent){
+    virtual void Update(UI_Event &UIEvent,void* ptr_in){
         cout<<"items"<<endl;};
 };
 class Final_gate: public Items{
     Final_gate();
-    void Update(UI_Event &UIEvent);
+    void Update(UI_Event &UIEvent,void* ptr_in);
 };
 class Weapon: public Items{//weapon system
 private:
@@ -30,7 +30,7 @@ private:
     unsigned int LastshotTime;
 public:
     Weapon();
-    void Update(UI_Event &UIEvent);
+    void Update(UI_Event &UIEvent,void* ptr_in);
 };
 class Bullet: public Items{
 private:
@@ -40,7 +40,7 @@ private:
     float life;//exist time limit;
 public:
     Bullet();
-    void Update(UI_Event &UIEvent);
+    void Update(UI_Event &UIEvent,void* ptr_in);
     bool DieBeauseOld();
 };
 #endif /* Items_hpp */
