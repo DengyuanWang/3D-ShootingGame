@@ -33,7 +33,7 @@ void Weapon::set_model(void *ptr_in)
     UP = glm::vec3{0,1,0};
     X = glm::cross(UP, Z);
     Y = glm::cross(Z, X);
-    pos = glm::vec3(Gobj_ptr->get_Model()[3])+Z*0.2f;
+    pos = glm::vec3(Gobj_ptr->get_Model()[3])+Z*1.0f;
     float aaa[16] = {
         X.x, X.y, X.z, 0,
         Y.x, Y.y, Y.z, 0,
@@ -136,7 +136,7 @@ void Bullet::Update(UI_Event &uievent,void* ptr_in)
         Physics_simulator *Pptr = (Physics_simulator*)Gobj_ptr->get_component("Physics_simulator");
         dir_vec= Gobj_ptr->get_Model()*glm::vec4{0,0,1,0};//direction equals to parent's face direction
         glm::vec3 V0= glm::normalize(glm::vec3{dir_vec})*speed;
-        Pptr->velocity = glm::vec4{V0.x,V0.y,V0.z,0};
+        Pptr->acceleration = glm::vec4{V0.x,V0.y,V0.z,0};
     }
    // dir_vec= Gobj_ptr->get_Model()*glm::vec4{0,0,1,0};//direction equals to parent's face direction
    // Gobj_ptr->translate(glm::normalize(glm::vec3{dir_vec})*speed);

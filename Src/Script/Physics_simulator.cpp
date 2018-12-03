@@ -16,7 +16,6 @@ Physics_simulator::Physics_simulator(void* ptr_in){
     Component_name = "Physics_simulator";
     Game_Obj* ptr;
     ptr = (Game_Obj*)ptr_in;
-
 }
 void Physics_simulator::Update(UI_Event &UIEvent,void* ptr_in)
 {
@@ -39,5 +38,24 @@ void Physics_simulator::Update(UI_Event &UIEvent,void* ptr_in)
         velocity = velocity+dV;
     }
     glm::vec4 movement = dX+dH;
+    glm::mat4 M_stash = ptr->get_Model();
     ptr->translate(glm::vec3{movement.x,movement.y,movement.z});
+    
+    vector<Game_Obj> *Gobj_list_ptr;
+    Gobj_list_ptr =(vector<Game_Obj> *)Gobj_list;
+    //check if collide with others
+    if(ptr->get_type()!="bullet")//only allow bullet to overlap with others
+        for(int i=0;i<Gobj_list_ptr->size();i++)
+        {
+            if(((*Gobj_list_ptr)[i].Index)!=ptr->Index//not self
+               &&(*Gobj_list_ptr)[i].check_collision(ptr))//collide with others
+            {
+                
+                ptr->set_mat(M_stash);
+                velocity = glm::vec4{0,0,0,0};
+                return;
+            }
+        }
+    
+    
 }
