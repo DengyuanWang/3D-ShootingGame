@@ -123,7 +123,7 @@ void GameLogic::set_indices()//reset all index
 {
     for(int i=0;i<G_objs.size();i++)
     {
-         G_objs[i].Index = i;
+        G_objs[i].Index = i;
         if(G_objs[i].get_type()=="player")
             player_index = i;
     }
@@ -156,8 +156,8 @@ void GameLogic::add_bullets()
         index += added_count;
         G_objs[0].set_mat(G_objs[index].get_Model());
         Bullet* bulletptr = (Bullet *)G_objs[0].Comp_list[0];
-        bulletptr->ownership =(void*)&G_objs[index];
-        cout<<G_objs[index].get_type()<<endl;
+        bulletptr->ownership =G_objs[index].get_type();
+        //cout<<G_objs[index].get_type()<<endl;
         Gptr->new_bullet_list[Gptr->new_bullet_list.size()-1]=NULL;
         Gptr->new_bullet_list.pop_back();
     }

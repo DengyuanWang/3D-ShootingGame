@@ -10,7 +10,7 @@
 #include "../GameLogic/Game_Obj.hpp"
 Items::Items(){
     Items_name="";
-    ownership=NULL;
+    ownership="";
 }
 Weapon::Weapon(){
     Cooldown = .2;//1 second
@@ -45,7 +45,6 @@ Bullet::Bullet(){
     speed = .04;
     born_time = Gptr->currentTime;
     life = 2;
-    ownership=NULL;
 }
 void Bullet::Update(UI_Event &uievent,void* ptr_in)
 {
@@ -57,12 +56,7 @@ void Bullet::Update(UI_Event &uievent,void* ptr_in)
         Gptr->set_event("Erase", true);
         Gptr->Erase_index.push_back(Gobj_ptr->Index);
         return;
-    }
-    if((*(Game_Obj*)ownership).get_type()!="player")
-    {
-        cout<<(*(Game_Obj*)ownership).get_type()<<endl;
-    }
-    
+    }    
     dir_vec= Gobj_ptr->get_Model()*glm::vec4{0,0,1,0};//direction equals to parent's face direction
     Gobj_ptr->translate(glm::normalize(glm::vec3{dir_vec})*speed);
    // cout<<"move"<<endl;

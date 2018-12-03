@@ -10,7 +10,7 @@
 #include "../GameLogic/Game_Obj.hpp"
 Monster::Monster(){
     Death_tag = false;//default as false
-    Health = 1;//0~100
+    Health = 5;//0~100
     Speed = 0;//default as 1
     //vector<string> Abilities;//default as "walk"
 }
@@ -31,18 +31,16 @@ void Static_M::Update(UI_Event &UIEvent, void *ptr_in){
             if((*Gobj_list_ptr)[i].get_type()=="bullet")//collide with bullet
             {
                 Bullet *tmpptr = (Bullet*)(*Gobj_list_ptr)[i].Comp_list[0];
-                int a=ptr->Index;
-                int b=(*(Game_Obj*)tmpptr->ownership).Index;
-                if(a!=b)//not self bullet
+                string b=tmpptr->ownership;
+                if(b=="player")//not self bullet
                 {
-                    if((*Gobj_list_ptr)[b].get_type()=="player")
-                        //player's bullet
-                    {
                         Gptr->set_event("Erase", true);
-                        Gptr->Erase_index.push_back(ptr->Index);//kill self
                         Gptr->Erase_index.push_back(i);//erase bullet
-                        return;
-                    }
+                        Health--;
+                        if(Health<=0){
+                            Gptr->Erase_index.push_back(ptr->Index);//kill self
+                            return;
+                        }
                 }
             }
         }

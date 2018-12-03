@@ -77,21 +77,17 @@ bool Game_Obj::attach_component(string component_name)
     if(component_name=="player")
     {
         Comp_list.push_back(new Player());
-        Comp_list[Comp_list.size()-1]->parent_index = &Index;
         cout<<"ptr:"<<this<<endl;
     }
     if(component_name=="weapon"){
         Comp_list.push_back(new Weapon());
-        Comp_list[Comp_list.size()-1]->parent_index = &Index;
     }
     if(component_name=="bullet"){
         Comp_list.push_back(new Bullet());
-        Comp_list[Comp_list.size()-1]->parent_index = &Index;
     }
     if(component_name=="static_monster")
     {
         Comp_list.push_back(new Static_M());
-        Comp_list[Comp_list.size()-1]->parent_index = &Index;
     }
     return true;
 }
@@ -104,7 +100,6 @@ void Game_Obj::Update(UI_Event &input_event)
     {
         Component* cpt;
         cpt=Comp_list[i];
-        cpt->parent_index = &Index;
         cpt->Update(input_event,this);
     }
 }

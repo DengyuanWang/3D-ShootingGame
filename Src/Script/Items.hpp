@@ -15,7 +15,7 @@
 using namespace std;
 class Items: public Component{
 public:
-    void* ownership;
+    string ownership;
     string Items_name;
     Items();
     virtual void Update(UI_Event &UIEvent,void* ptr_in){
