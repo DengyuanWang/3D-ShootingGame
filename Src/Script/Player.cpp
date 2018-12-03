@@ -33,7 +33,7 @@ void Player::update_view(UI_Event &UIEvent,void* ptr_in)
     glm::vec3 move_vec{0,0,0};
     if(UIEvent.check_event("Up")){
         move_vec +=glm::vec3{0,0,1};
-        UIEvent.reset_event("UP");
+        UIEvent.reset_event("Up");
     }
     if(UIEvent.check_event("Down")){
         move_vec +=glm::vec3{0,0,-1};

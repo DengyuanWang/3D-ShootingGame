@@ -63,9 +63,8 @@ void GameLogic::Add_Game_obj()//add at head
     //G_objs.push_back();
     G_objs.insert(G_objs.begin(), Game_Obj());
 }
-bool GameLogic::Update(UI_Event uievent)
+bool GameLogic::Update()
 {
-   
     Game_Events* Gptr=(Game_Events*)Gevent_list;
     Gptr->lastTime = Gptr->currentTime;
     Gptr->currentTime = SDL_GetTicks();
@@ -87,7 +86,7 @@ bool GameLogic::Update(UI_Event uievent)
 //Update all Game objs
     set_indices();
     for(int i=0;i<G_objs.size();i++)
-        G_objs[i].Update(uievent);
+        G_objs[i].Update(ui.rst);
     
     
 //Get camera pos
@@ -156,6 +155,9 @@ void GameLogic::add_bullets()
         added_count+=1;
         index += added_count;
         G_objs[0].set_mat(G_objs[index].get_Model());
+        Bullet* bulletptr = (Bullet *)G_objs[0].Comp_list[0];
+        bulletptr->ownership =(void*)&G_objs[index];
+        cout<<G_objs[index].get_type()<<endl;
         Gptr->new_bullet_list[Gptr->new_bullet_list.size()-1]=NULL;
         Gptr->new_bullet_list.pop_back();
     }

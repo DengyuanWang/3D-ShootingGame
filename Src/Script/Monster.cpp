@@ -24,15 +24,18 @@ void Static_M::Update(UI_Event &UIEvent, void *ptr_in){
     Gobj_list_ptr =(vector<Game_Obj> *)Gobj_list;
     for(int i=0;i<Gobj_list_ptr->size();i++)
     {
+        //cout<<"monster:"<<ptr->Index<<"others"<<(*Gobj_list_ptr)[i].Index<<endl;
         if(((*Gobj_list_ptr)[i].Index)!=ptr->Index//not self
-           &&check_collision(ptr->collider_center,(*Gobj_list_ptr)[i].collider_center,ptr->collider_size,(*Gobj_list_ptr)[i].collider_size))//collide with others
+           &&ptr->check_collision(&(*Gobj_list_ptr)[i]))//collide with others
         {
             if((*Gobj_list_ptr)[i].get_type()=="bullet")//collide with bullet
             {
                 Bullet *tmpptr = (Bullet*)(*Gobj_list_ptr)[i].Comp_list[0];
-                if(parent_index!=tmpptr->parent_index)//not self bullet
+                int a=ptr->Index;
+                int b=(*(Game_Obj*)tmpptr->ownership).Index;
+                if(a!=b)//not self bullet
                 {
-                    if((*Gobj_list_ptr)[*(tmpptr->parent_index)].get_type()=="player")
+                    if((*Gobj_list_ptr)[b].get_type()=="player")
                         //player's bullet
                     {
                         Gptr->set_event("Erase", true);

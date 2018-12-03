@@ -29,6 +29,7 @@ private:
     SDL_Event WindowsEvent;//window event
 
 public:
+    UI_Event rst;
     glm::mat4 View_matrix;
     bool Active_tag;//true for window alive, false for no window alive
 //Window and OS
@@ -37,7 +38,7 @@ public:
     bool open_window();//init SDL and open a window
     bool close_window();//close window
     bool full_screen_switch();//switch between full screen or not
-    UI_Event get_input_event();//get event for keyboard input or click
+    void catch_input_event();//get event for keyboard input or click
 //GUI and OpenGL
     bool Draw(vector<string> model_names,vector<glm::mat4> model_matrixs,vector<string> textures);
     bool Init_openGL();

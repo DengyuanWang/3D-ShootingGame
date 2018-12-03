@@ -27,12 +27,14 @@ int main(int argc, const char * argv[]) {
     
     while(loop_tag)
     {
-        UI_Event ui_event = G_logic.ui.get_input_event();
-        if(ui_event.check_event("Esc"))
+        G_logic.ui.catch_input_event();
+       // if(G_logic.ui.rst.check_event("Shoot"))
+         //   cout<<"outcheck"<<G_logic.ui.rst.check_event("Shoot")<<endl;
+        if(G_logic.ui.rst.check_event("Esc"))
                 loop_tag = false;
-        else if(ui_event.check_event("FullScreen_switch"))
+        else if(G_logic.ui.rst.check_event("FullScreen_switch"))
                 G_logic.ui.full_screen_switch();
-        else loop_tag = G_logic.Update(ui_event);
+        else loop_tag = G_logic.Update();
 
     }
 

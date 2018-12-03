@@ -97,13 +97,14 @@ bool Game_Obj::attach_component(string component_name)
 }
 void Game_Obj::Update(UI_Event &input_event)
 {
-    cout<<Type_list[Type_index]<<endl;
+    //cout<<Type_list[Type_index]<<endl;
     collider_center = Model*collider_offset;
     Game_Events G_events;
     for(int i=0;i<Comp_list.size();i++)
     {
         Component* cpt;
         cpt=Comp_list[i];
+        cpt->parent_index = &Index;
         cpt->Update(input_event,this);
     }
 }
@@ -123,12 +124,18 @@ bool Game_Obj::check_collision(Game_Obj *ptr)//check collision with other Game o
     points.push_back(center+glm::vec4(-size.x,-size.y,-size.z,0));//---
     for(int i=0;i<points.size();i++)
     {
+
         //convert to world coordinates
         points[i] = M4*points[i];
         //convert to current obj's local coordinates
         points[i] = glm::inverse(Model)*points[i];
         //check if collide
         points[i]  = points[i] - collider_offset;
+        
+        if(pow(points[i].x,2)+pow(points[i].y,2)+pow(points[i].z,2)<.5)
+        {
+            
+        }
         if(points[i].x>-collider_size.x&&points[i].x<collider_size.x&&
            points[i].y>-collider_size.y&&points[i].y<collider_size.y&&
            points[i].z>-collider_size.z&&points[i].z<collider_size.z)

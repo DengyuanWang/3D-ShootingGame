@@ -31,6 +31,6 @@ public:
     GameLogic();
     ~GameLogic();
     void restart();//reset game
-    bool Update(UI_Event input_event);//ture for win, false for continue
+    bool Update();//ture for win, false for continue
 };
 #endif /* GameLogic_hpp */

@@ -7,7 +7,6 @@
 //
 
 #include "UI.hpp"
-#define DEBUG true
 //bool Active_tag;//true for windo alive, false for no window alive
 //SDL_Window *Window;//window handler
 //SDL_GLContext Context;//window context handler
@@ -77,9 +76,8 @@ bool UI::full_screen_switch()//switch between full screen or not
     SDL_SetWindowFullscreen(Window, Fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
     return true;
 }
-UI_Event UI::get_input_event()//get event for keyboard input or click
+void UI::catch_input_event()//get event for keyboard input or click
 {
-    UI_Event rst;
     string result;
     int  X=0;
     int  Y=0;
@@ -114,7 +112,6 @@ UI_Event UI::get_input_event()//get event for keyboard input or click
         break;
     }
     rst.mouse_status[0] = X;rst.mouse_status[1] = Y;
-    return rst;
 }
 bool UI::Init_openGL()
 {
