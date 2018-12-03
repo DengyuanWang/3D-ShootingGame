@@ -37,6 +37,7 @@ public:
 };
 class Bullet: public Items{
 private:
+    bool init_phy;
     float speed;//fly speed
     glm::vec4 dir_vec;
     unsigned int born_time;

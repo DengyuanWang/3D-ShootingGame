@@ -155,7 +155,7 @@ void GameLogic::add_bullets()
         <<"[0 0 0] "<<"[.2 .2 .2] "<<"[0 0 0]";
         decode_cmd(ss.str());
         Weapon* Wptr = ((Weapon*)G_objs[index].get_component("Weapon"));
-        if(Wptr!=NULL)
+        if(Wptr!=NULL)//To fix the bug in erase, when inlegal index happened, just ignore it
         {
             cout<<"shoot from:"<<G_objs[index].get_type()<<endl;
             glm::mat4 M4 = ((Weapon*)G_objs[index].get_component("Weapon"))->Model;

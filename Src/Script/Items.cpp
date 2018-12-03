@@ -77,7 +77,7 @@ void Weapon::Update(UI_Event &uievent,void* ptr_in)
 }
 Bullet::Bullet(void *ptr_in){
     Game_Events *Gptr = (Game_Events*)Gevent_list;
-    speed = .04;
+    speed = 5;
     born_time = Gptr->currentTime;
     life = 2;
     size = glm::vec3{.1,.1,.2};
@@ -85,6 +85,7 @@ Bullet::Bullet(void *ptr_in){
     Game_Obj* ptr;
     ptr = (Game_Obj*)ptr_in;
     ptr->attach_component("physics_simulator");
+    init_phy = false;
 }
 void Bullet::Update(UI_Event &uievent,void* ptr_in)
 {
@@ -130,9 +131,15 @@ void Bullet::Update(UI_Event &uievent,void* ptr_in)
     
     
     
-    
-    dir_vec= Gobj_ptr->get_Model()*glm::vec4{0,0,1,0};//direction equals to parent's face direction
-    Gobj_ptr->translate(glm::normalize(glm::vec3{dir_vec})*speed);
+    if(init_phy==false)
+    {
+        Physics_simulator *Pptr = (Physics_simulator*)Gobj_ptr->get_component("Physics_simulator");
+        dir_vec= Gobj_ptr->get_Model()*glm::vec4{0,0,1,0};//direction equals to parent's face direction
+        glm::vec3 V0= glm::normalize(glm::vec3{dir_vec})*speed;
+        Pptr->velocity = glm::vec4{V0.x,V0.y,V0.z,0};
+    }
+   // dir_vec= Gobj_ptr->get_Model()*glm::vec4{0,0,1,0};//direction equals to parent's face direction
+   // Gobj_ptr->translate(glm::normalize(glm::vec3{dir_vec})*speed);
    // cout<<"move"<<endl;    
 }
 bool Bullet::DieBeauseOld(){
