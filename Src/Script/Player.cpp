@@ -68,6 +68,16 @@ void Player::update_view(UI_Event &UIEvent,void* ptr_in)
                     Gptr->set_event("ReatchGate", true);
                     cout<<"you win"<<endl;
                 }
+                if((*Gobj_list_ptr)[i].get_type()=="bullet")
+                {
+                    Bullet *bptr = (Bullet*)(*Gobj_list_ptr)[i].Comp_list[0];
+                    if(bptr->ownership!="player")
+                    {
+                        Health--;
+                        if(Health<0)
+                            Gptr->set_event("Player_dead", true);
+                    }
+                }
                 move_allow = false;
             }
         }

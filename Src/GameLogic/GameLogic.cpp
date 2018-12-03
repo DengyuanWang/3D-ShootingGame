@@ -68,7 +68,7 @@ bool GameLogic::Update()
     Game_Events* Gptr=(Game_Events*)Gevent_list;
     Gptr->lastTime = Gptr->currentTime;
     Gptr->currentTime = SDL_GetTicks();
-    if(Gptr->check_event("ReatchGate"))
+    if(Gptr->check_event("ReatchGate")||Gptr->check_event("Player_dead"))
         return false;
     if(Gptr->check_event("Erase"))
     {
