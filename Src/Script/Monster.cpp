@@ -34,10 +34,11 @@ void Static_M::Update(UI_Event &UIEvent, void *ptr_in){
                 string b=tmpptr->ownership;
                 if(b=="player")//not self bullet
                 {
-                        Gptr->set_event("Erase", true);
-                        Gptr->Erase_index.push_back(i);//erase bullet
+                    
+                        //Gptr->Erase_index.push_back(i);//erase bullet
                         Health--;
                         if(Health<=0){
+                            Gptr->set_event("Erase", true);
                             Gptr->Erase_index.push_back(ptr->Index);//kill self
                             return;
                         }
