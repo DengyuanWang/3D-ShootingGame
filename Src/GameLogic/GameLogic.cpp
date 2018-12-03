@@ -91,7 +91,7 @@ bool GameLogic::Update()
     
 //Get camera pos
     
-    Player *tmp = (Player *)(G_objs[player_index].Comp_list[0]);
+    Player *tmp = (Player *)(G_objs[player_index]).get_component("Player");
     glm::mat4 vmat =tmp->view_matrix;
     ui.View_matrix =vmat;
     /*
@@ -147,25 +147,23 @@ void GameLogic::add_bullets()
     while(Gptr->new_bullet_list.size()!=0)
     {
         int index = *Gptr->new_bullet_list[Gptr->new_bullet_list.size()-1];
+        added_count+=1;
+        index += added_count;
         stringstream ss;
 //index Objname model texture size[xyz] position[xyz] boxcollider[xyz] colliderpos_offset[xyz]
         ss<<"0 "<<"bullet "<<"sphere "<<"color "<<"[.2 .2 .2] "
         <<"[0 0 0] "<<"[.2 .2 .2] "<<"[0 0 0]";
         decode_cmd(ss.str());
-        added_count+=1;
-        index += added_count;
-        if(G_objs[index].get_type()=="player")
-            {
-                float angle = ((Player*)G_objs[index].Comp_list[0])->angle;
-                cout<<"angle:"<<angle<<endl;
-                G_objs[0].set_mat(G_objs[index].get_Model());
-                G_objs[0].local_rotation(glm::vec3(angle,0,0));
-            }
-        else
-            G_objs[0].set_mat(G_objs[index].get_Model());
-        Bullet* bulletptr = (Bullet *)G_objs[0].Comp_list[0];
-        bulletptr->ownership =G_objs[index].get_type();
-        //cout<<G_objs[index].get_type()<<endl;
+        Weapon* Wptr = ((Weapon*)G_objs[index].get_component("Weapon"));
+        if(Wptr!=NULL)
+        {
+            cout<<"shoot from:"<<G_objs[index].get_type()<<endl;
+            glm::mat4 M4 = ((Weapon*)G_objs[index].get_component("Weapon"))->Model;
+            G_objs[0].set_mat(M4);
+            Bullet* bulletptr = (Bullet *)G_objs[0].get_component("Bullet");;
+            bulletptr->ownership =G_objs[index].get_type();
+            G_objs[0].scale(bulletptr->size);
+        }
         Gptr->new_bullet_list[Gptr->new_bullet_list.size()-1]=NULL;
         Gptr->new_bullet_list.pop_back();
     }
@@ -173,10 +171,10 @@ void GameLogic::add_bullets()
 }
 void GameLogic::decode_cmd(string in)
 {
+    bool player_tag = false,gate_tag=false;
     string tmp = in;
     if(tmp[0]=='#') return;
     else{
-        bool player_tag = false;
         //index,objname,model,texture,size,position;
         for(int i=0,j = 0;j<tmp.length();j++)
         {
@@ -198,6 +196,8 @@ void GameLogic::decode_cmd(string in)
                     cout<<tmp.substr(k,j-k)<<endl;
                     if(tmp.substr(k,j-k)=="player")
                         player_tag = true;
+                    else if(tmp.substr(k,j-k)=="gate")
+                        gate_tag = true;
                     break;
                 case 2://model
                     k = j;
@@ -246,5 +246,14 @@ void GameLogic::decode_cmd(string in)
             }
             i++;
         }
+    }
+    if(gate_tag)
+    {
+        //G_objs[0].local_rotation(glm::vec3{0,M_PI/2,0});
+        G_objs[0].local_rotation(glm::vec3{-M_PI/2,0,0});
+         //G_objs[0].local_rotation(glm::vec3{0,0,M_PI/2});
+    }
+    if(player_tag){
+        // G_objs[0].local_rotation(glm::vec3{-M_PI/2,0,0});
     }
 }

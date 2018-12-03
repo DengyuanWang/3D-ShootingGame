@@ -45,6 +45,7 @@ public:
     ~Game_Obj();
 //Specific functionalities to involve game component
     bool attach_component(string component_name);
+    Component* get_component(string component_name);
     void Update(UI_Event &input_event);
     bool check_collision(Game_Obj *ptr);//check collision with other Game obj
     

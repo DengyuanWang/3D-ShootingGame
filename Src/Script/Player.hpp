@@ -23,7 +23,7 @@ public:
     glm::vec4 eye_pos_offset;//in player's coordination
     glm::mat4 view_matrix;
     float angle;
-    Player();
+    Player(void *ptr_in);
     void Update(UI_Event &UIEvent, void *ptr_in);
     void update_view(UI_Event &UIEvent, void*ptr_in);
     void test(){

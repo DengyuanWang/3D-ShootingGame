@@ -12,13 +12,39 @@ Items::Items(){
     Items_name="";
     ownership="";
 }
-Weapon::Weapon(){
+Weapon::Weapon(void *ptr_in){
     Cooldown = .2;//1 second
     Items_name = "Weapon";
     LastshotTime = 0;
+    Component_name = "Weapon";
+}
+void Weapon::set_model(void *ptr_in)
+{
+    Game_Obj* Gobj_ptr = (Game_Obj*)ptr_in;
+    glm::vec3 X,Y,Z,UP,pos;
+    if(Gobj_ptr->get_type()=="player"){
+        Player *P_ptr =(Player*)Gobj_ptr->get_component("Player");
+        glm::vec4 view_world = Gobj_ptr->get_Model()* P_ptr->ViewAt_vector;
+        Z =glm::normalize(glm::vec3{view_world.x,view_world.y,view_world.z});
+    }else {
+        Model = Gobj_ptr->get_Model();
+        Z =glm::normalize(glm::vec3(Model[2]));
+    }
+    UP = glm::vec3{0,1,0};
+    X = glm::cross(UP, Z);
+    Y = glm::cross(Z, X);
+    pos = glm::vec3(Gobj_ptr->get_Model()[3])+Z*0.2f;
+    float aaa[16] = {
+        X.x, X.y, X.z, 0,
+        Y.x, Y.y, Y.z, 0,
+        Z.x, Z.y, Z.z, 0,
+        pos.x, pos.y, pos.z, 1
+    };
+    memcpy( glm::value_ptr( Model ), aaa, sizeof( aaa ) );
 }
 void Weapon::Update(UI_Event &uievent,void* ptr_in)
 {
+    set_model(ptr_in);
     //get handlers
     Game_Events *Gptr = (Game_Events*)Gevent_list;
     Game_Obj* Gobj_ptr = (Game_Obj*)ptr_in;
@@ -49,11 +75,16 @@ void Weapon::Update(UI_Event &uievent,void* ptr_in)
         //not defined
     }
 }
-Bullet::Bullet(){
+Bullet::Bullet(void *ptr_in){
     Game_Events *Gptr = (Game_Events*)Gevent_list;
     speed = .04;
     born_time = Gptr->currentTime;
     life = 2;
+    size = glm::vec3{.1,.1,.2};
+    Component_name = "Bullet";
+    Game_Obj* ptr;
+    ptr = (Game_Obj*)ptr_in;
+    ptr->attach_component("physics_simulator");
 }
 void Bullet::Update(UI_Event &uievent,void* ptr_in)
 {
@@ -102,13 +133,7 @@ void Bullet::Update(UI_Event &uievent,void* ptr_in)
     
     dir_vec= Gobj_ptr->get_Model()*glm::vec4{0,0,1,0};//direction equals to parent's face direction
     Gobj_ptr->translate(glm::normalize(glm::vec3{dir_vec})*speed);
-   // cout<<"move"<<endl;
-    
-    //
-    
-    
-    
-    
+   // cout<<"move"<<endl;    
 }
 bool Bullet::DieBeauseOld(){
     Game_Events *Gptr = (Game_Events*)Gevent_list;

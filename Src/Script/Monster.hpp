@@ -25,12 +25,12 @@ public:
 };
 class Static_M: public Monster{
 public:
-    Static_M();
+    Static_M(void *ptr_in);
     void Update(UI_Event &UIEvent, void *ptr_in);
 };
 class Moving_M: public Monster{
 public:
-    Moving_M();
+    Moving_M(void *ptr_in);
     void Update(UI_Event &UIEvent, void *ptr_in);
 };
 #endif /* Monster_hpp */

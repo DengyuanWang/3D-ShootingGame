@@ -29,8 +29,10 @@ class Weapon: public Items{//weapon system
 private:
     float Cooldown;//second
     unsigned int LastshotTime;
+    void set_model(void *ptr_in);
 public:
-    Weapon();
+    glm::mat4 Model;
+    Weapon(void *ptr_in);
     void Update(UI_Event &UIEvent,void* ptr_in);
 };
 class Bullet: public Items{
@@ -40,7 +42,8 @@ private:
     unsigned int born_time;
     float life;//exist time limit;
 public:
-    Bullet();
+    glm::vec3 size;
+    Bullet(void *ptr_in);
     void Update(UI_Event &UIEvent,void* ptr_in);
     bool DieBeauseOld();
 };

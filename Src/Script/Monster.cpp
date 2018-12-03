@@ -12,10 +12,13 @@ Monster::Monster(){
     Death_tag = false;//default as false
     Health = 5;//0~100
     Speed = 0;//default as 1
+    Component_name = "Monster";
     //vector<string> Abilities;//default as "walk"
 }
-Static_M::Static_M(){
-    
+Static_M::Static_M(void *ptr_in){
+    Component_name = "Static_monster";
+    Game_Obj* ptr =(Game_Obj*)ptr_in;
+    ptr->attach_component("weapon");
 }
 void Static_M::Update(UI_Event &UIEvent, void *ptr_in){
     Game_Events* Gptr =(Game_Events*)Gevent_list;//get game event handler
@@ -30,7 +33,8 @@ void Static_M::Update(UI_Event &UIEvent, void *ptr_in){
         {
             if((*Gobj_list_ptr)[i].get_type()=="bullet")//collide with bullet
             {
-                Bullet *tmpptr = (Bullet*)(*Gobj_list_ptr)[i].Comp_list[0];
+                
+                Bullet *tmpptr = (Bullet*)(*Gobj_list_ptr)[i].get_component("Bullet");
                 string b=tmpptr->ownership;
                 if(b=="player")//not self bullet
                 {

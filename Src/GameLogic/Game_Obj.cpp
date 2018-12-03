@@ -27,10 +27,10 @@ bool Game_Obj::Specify_type(string name)
         Type_index = (int)std::distance( Type_list.begin(), index );;//event none
         Model_name = Type_list[Type_index];
         attach_component(name);
-        if(name=="player"||name=="static_monster")
-        {//add one more component for player and static_monster
-            attach_component("weapon");
-        }
+        //if(name=="player"||name=="static_monster")
+        //{//add one more component for player and static_monster
+        //    attach_component("weapon");
+        //}
         
         return true;
     }else return false;
@@ -76,20 +76,35 @@ bool Game_Obj::attach_component(string component_name)
 {
     if(component_name=="player")
     {
-        Comp_list.push_back(new Player());
+        Comp_list.push_back(new Player(this));
         cout<<"ptr:"<<this<<endl;
     }
     if(component_name=="weapon"){
-        Comp_list.push_back(new Weapon());
+        Comp_list.push_back(new Weapon(this));
     }
     if(component_name=="bullet"){
-        Comp_list.push_back(new Bullet());
+        Comp_list.push_back(new Bullet(this));
     }
     if(component_name=="static_monster")
     {
-        Comp_list.push_back(new Static_M());
+        Comp_list.push_back(new Static_M(this));
+    }
+    if(component_name=="physics_simulator")
+    {
+        Comp_list.push_back(new Physics_simulator(this));
     }
     return true;
+}
+Component* Game_Obj::get_component(string component_name)
+{
+    for(int i=0;i<Comp_list.size();i++)
+    {
+        Component* cpt;
+        cpt=Comp_list[i];
+        if(cpt->Component_name==component_name)
+            return cpt;
+    }
+    return NULL;
 }
 void Game_Obj::Update(UI_Event &input_event)
 {

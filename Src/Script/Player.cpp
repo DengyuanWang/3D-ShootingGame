@@ -8,7 +8,7 @@
 
 #include "Player.hpp"
 #include "../GameLogic/Game_Obj.hpp"
-Player::Player(){
+Player::Player(void *ptr_in){
     Death_tag = false;//default as false
     Health = 1;//0~100
     Speed = 10;//default as 1
@@ -16,6 +16,10 @@ Player::Player(){
     ViewAt_vector = glm::vec4(0,0,0.2f,0);
     eye_pos_offset = glm::vec4(0.01f,0.02f,-0.25f,0);
     Component_name = "Player";
+    Game_Obj* ptr;
+    ptr = (Game_Obj*)ptr_in;
+    ptr->attach_component("weapon");
+    ptr->attach_component("physics_simulator");
 }
 void Player::Update(UI_Event &UIEvent,void* ptr_in)
 {
@@ -70,7 +74,7 @@ void Player::update_view(UI_Event &UIEvent,void* ptr_in)
                 }
                 if((*Gobj_list_ptr)[i].get_type()=="bullet")
                 {
-                    Bullet *bptr = (Bullet*)(*Gobj_list_ptr)[i].Comp_list[0];
+                    Bullet *bptr = (Bullet*)(*Gobj_list_ptr)[i].get_component("Bullet");
                     if(bptr->ownership!="player")
                     {
                         Health--;
