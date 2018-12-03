@@ -154,7 +154,15 @@ void GameLogic::add_bullets()
         decode_cmd(ss.str());
         added_count+=1;
         index += added_count;
-        G_objs[0].set_mat(G_objs[index].get_Model());
+        if(G_objs[index].get_type()=="player")
+            {
+                float angle = ((Player*)G_objs[index].Comp_list[0])->angle;
+                cout<<"angle:"<<angle<<endl;
+                G_objs[0].set_mat(G_objs[index].get_Model());
+                G_objs[0].local_rotation(glm::vec3(angle,0,0));
+            }
+        else
+            G_objs[0].set_mat(G_objs[index].get_Model());
         Bullet* bulletptr = (Bullet *)G_objs[0].Comp_list[0];
         bulletptr->ownership =G_objs[index].get_type();
         //cout<<G_objs[index].get_type()<<endl;

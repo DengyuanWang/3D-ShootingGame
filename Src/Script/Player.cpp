@@ -88,6 +88,10 @@ void Player::update_view(UI_Event &UIEvent,void* ptr_in)
     float xy[2] ={-UIEvent.mouse_status[0]/500.0f,UIEvent.mouse_status[1]/500.0f};
     ptr->local_rotation(glm::vec3(0,xy[0],0));
     ViewAt_vector = glm::rotateX(ViewAt_vector,xy[1]);//rotate in model's coordinates
+    glm::vec3 D = glm::normalize(glm::vec3(ViewAt_vector.x,ViewAt_vector.y,ViewAt_vector.z));
+    angle = -2*glm::acos(glm::dot(D, glm::vec3(0,0,1)));
+    if(D.y<0) angle=-angle;
+    if(D.y==0) angle = 0;
     /*
      1. the camera pos is at a const offset: (0.01f,0.05f,-0.1f) of the player's model
      2. the view direction is a vector in yz plane of player's local coordinate:
