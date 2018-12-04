@@ -20,6 +20,7 @@ Player::Player(void *ptr_in){
     ptr = (Game_Obj*)ptr_in;
     ptr->attach_component("weapon");
     ptr->attach_component("physics_simulator");
+    ((Physics_simulator*)ptr->get_component("Physics_simulator"))->enable_gravity = true;
 }
 void Player::Update(UI_Event &UIEvent,void* ptr_in)
 {
@@ -31,8 +32,14 @@ void Player::update_view(UI_Event &UIEvent,void* ptr_in)
     Game_Obj* ptr;
     ptr = (Game_Obj*)ptr_in;
     //Player controller:
-    //move player
+    //jump
     
+    if(UIEvent.check_event("Jump")){
+        ptr->attach_component("physics_simulator");
+        ((Physics_simulator*)ptr->get_component("Physics_simulator"))->velocity = glm::vec4{0,1,0,0};
+        UIEvent.reset_event("Jump");
+    }
+    //move player
     float step = Speed*(Gptr->currentTime-Gptr->lastTime)/1000.0;
     glm::vec3 move_vec{0,0,0};
     if(UIEvent.check_event("Up")){

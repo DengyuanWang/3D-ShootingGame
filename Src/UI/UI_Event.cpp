@@ -12,7 +12,7 @@
 vector<string> UI_Event::Event_list={"None","Esc","FullScreen_switch",
     "Up","Down","Left","Right",
     "UpLeft","UpRight","DownLeft","DownRight",
-    "Shoot"
+    "Shoot","Jump"
 };
 UI_Event::UI_Event()
 {
