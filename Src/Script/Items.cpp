@@ -34,13 +34,22 @@ void Weapon::set_model(void *ptr_in)
     X = glm::cross(UP, Z);
     Y = glm::cross(Z, X);
     pos = glm::vec3(Gobj_ptr->get_Model()[3])+Z*1.0f;
+    
     float aaa[16] = {
         X.x, X.y, X.z, 0,
         Y.x, Y.y, Y.z, 0,
         Z.x, Z.y, Z.z, 0,
         pos.x, pos.y, pos.z, 1
     };
+    /*
+    float aaa[16] = {
+        -1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        pos.x, pos.y, pos.z, 1
+    };*/
     memcpy( glm::value_ptr( Model ), aaa, sizeof( aaa ) );
+
 }
 void Weapon::Update(UI_Event &uievent,void* ptr_in)
 {
@@ -77,7 +86,7 @@ void Weapon::Update(UI_Event &uievent,void* ptr_in)
 }
 Bullet::Bullet(void *ptr_in){
     Game_Events *Gptr = (Game_Events*)Gevent_list;
-    speed = 5;
+    speed = 1;
     born_time = Gptr->currentTime;
     life = 2;
     size = glm::vec3{.1,.1,.2};
@@ -136,7 +145,7 @@ void Bullet::Update(UI_Event &uievent,void* ptr_in)
         Physics_simulator *Pptr = (Physics_simulator*)Gobj_ptr->get_component("Physics_simulator");
         dir_vec= Gobj_ptr->get_Model()*glm::vec4{0,0,1,0};//direction equals to parent's face direction
         glm::vec3 V0= glm::normalize(glm::vec3{dir_vec})*speed;
-        Pptr->acceleration = glm::vec4{V0.x,V0.y,V0.z,0};
+        Pptr->velocity = glm::vec4{V0.x,V0.y,V0.z,0};
     }
    // dir_vec= Gobj_ptr->get_Model()*glm::vec4{0,0,1,0};//direction equals to parent's face direction
    // Gobj_ptr->translate(glm::normalize(glm::vec3{dir_vec})*speed);

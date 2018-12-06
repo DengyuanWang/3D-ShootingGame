@@ -31,6 +31,30 @@ void Player::update_view(UI_Event &UIEvent,void* ptr_in)
     Game_Events* Gptr =(Game_Events*)Gevent_list;//get game event handler
     Game_Obj* ptr;
     ptr = (Game_Obj*)ptr_in;
+    vector<void*> collision_list;
+    collision_list = ((Physics_simulator*)ptr->get_component("Physics_simulator"))->collision_list;
+    
+    for(int i=0;i<collision_list.size();i++)
+    {
+        Game_Obj* ptr2 = (Game_Obj*)collision_list[i];
+        if(ptr2->get_type()=="floor") continue;
+        if(ptr2->get_type()=="gate")
+        {
+            Gptr->set_event("ReatchGate", true);
+            cout<<"you win"<<endl;
+        }
+        if(ptr2->get_type()=="bullet")
+        {
+            cout<<"detected hit"<<endl;
+            Bullet *bptr = (Bullet*)ptr2->get_component("Bullet");
+            if(bptr->ownership!="player")
+            {
+                Health--;
+                if(Health<=0)
+                    Gptr->set_event("Player_dead", true);
+            }
+        }
+    }
     //Player controller:
     //jump
     
@@ -85,7 +109,7 @@ void Player::update_view(UI_Event &UIEvent,void* ptr_in)
                     if(bptr->ownership!="player")
                     {
                         Health--;
-                        if(Health<0)
+                        if(Health<=0)
                             Gptr->set_event("Player_dead", true);
                     }
                 }

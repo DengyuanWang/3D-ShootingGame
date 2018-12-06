@@ -1,7 +1,7 @@
 #index Objname model texture size[fx,fy,fz] position[x y z] boxcollider[x y z] colliderpos_offset[x y z] 
 #notice:X is left,Y is up ,Z is look in
 0 floor cube wood [50 1 50] [0 0 25] [50 1 50] [0 -.2 0]
-1 player teapot brick [.1 .1 .1] [0 1 3] [.1 .1 .1] [0 0 0]
+1 player teapot brick [.1 .1 .1] [0 1 3] [.5 .5 .5] [0 0 0]
 2 gate teapot color [1 1 1] [0 1 5] [.5 .5 .2] [0 0 0]
 3 wall cube brick [1 1 1] [1 1 5] [.7 .5 .7] [0 0.2 0]
 4 wall cube brick [1 1 1] [2 1 5] [.7 .5 .7] [0 0.2 0]

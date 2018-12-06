@@ -15,10 +15,12 @@
 using namespace std;
 class Physics_simulator: public Component{
 public:
+    vector<void*> collision_list;
     glm::vec4 velocity;//save current velocity of obj
     glm::vec4 gravity;//save gravity affects the obj
     glm::vec4 acceleration;//save acceleration of obj
     bool enable_gravity;//true for enable
+    glm::vec4 calcu_movement(float dT);
 public:
     Physics_simulator(void* ptr_in);
     void Update(UI_Event &UIEvent,void* ptr_in);

@@ -157,12 +157,18 @@ void GameLogic::add_bullets()
         Weapon* Wptr = ((Weapon*)G_objs[index].get_component("Weapon"));
         if(Wptr!=NULL)//To fix the bug in erase, when inlegal index happened, just ignore it
         {
-            cout<<"shoot from:"<<G_objs[index].get_type()<<endl;
+            //cout<<"shoot from:"<<G_objs[index].get_type()<<endl;
             glm::mat4 M4 = ((Weapon*)G_objs[index].get_component("Weapon"))->Model;
+            glm::vec3 tmp(M4[2]);
             G_objs[0].set_mat(M4);
             Bullet* bulletptr = (Bullet *)G_objs[0].get_component("Bullet");;
             bulletptr->ownership =G_objs[index].get_type();
+            if(bulletptr->ownership=="")
+            {
+                
+            }
             G_objs[0].scale(bulletptr->size);
+            
         }
         Gptr->new_bullet_list[Gptr->new_bullet_list.size()-1]=NULL;
         Gptr->new_bullet_list.pop_back();
@@ -193,7 +199,7 @@ void GameLogic::decode_cmd(string in)
                     while(tmp[++j]!=' ');
                     //set type
                      G_objs[0].Specify_type(tmp.substr(k,j-k));
-                    cout<<tmp.substr(k,j-k)<<endl;
+                    //cout<<tmp.substr(k,j-k)<<endl;
                     if(tmp.substr(k,j-k)=="player")
                         player_tag = true;
                     else if(tmp.substr(k,j-k)=="gate")

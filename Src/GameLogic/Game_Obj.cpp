@@ -52,13 +52,8 @@ void Game_Obj::local_translate(glm::vec3 T_vec)//translate in world coordinate
 }
 void Game_Obj::scale(glm::vec3 S_vec)
 {
-    glm::vec4 x_local{1.0f,0.0f,0.0f,0},y_local{0.0f,1.0f,0.0f,0},z_local{0.0f,0.0f,1.0f,0};
-    glm::vec4 x_world,y_world,z_world;
-    x_world = Model*x_local;y_world = Model*y_local;z_world = Model*z_local;
-    glm::vec3 local_scale = glm::vec3(S_vec.x*x_world+S_vec.y*y_world+S_vec.z*z_world);
-    
     glm::mat4 modelMatrix = glm::mat4();
-    modelMatrix = glm::scale(modelMatrix, local_scale);
+    modelMatrix = glm::scale(modelMatrix, S_vec);
     Model = Model*modelMatrix;
 }
 void Game_Obj::local_rotation(glm::vec3 angles)//rotate angles for each axises in local coordinates
