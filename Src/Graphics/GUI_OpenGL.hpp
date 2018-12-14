@@ -25,6 +25,7 @@ private:
     GLuint VertexShader;
     GLuint FragmentShader;
     GLuint ShaderProgram;
+    GLuint playerVao;
     vector<GLuint> Vaos;
     vector<GLuint> Vbos;
     vector<GLuint> Texs;

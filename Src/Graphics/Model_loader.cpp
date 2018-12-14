@@ -42,6 +42,8 @@ GLuint Model_loader::LoadModel(const std::string &modelfn, GLuint s) {
         std::cerr << "Error Initializing scene " << std::endl;
     }
 
+    cout << "Player Model Loaded " << numIndices << " indices " << numBones << " bones" << endl;
+
     glBindVertexArray(0);
 
     return vao;
