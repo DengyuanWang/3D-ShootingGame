@@ -25,7 +25,7 @@ bool Game_Obj::Specify_type(string name)
     if (index != Type_list.end())
     {
         Type_index = (int)std::distance( Type_list.begin(), index );;//event none
-        Model_name = Type_list[Type_index];
+        //Model_name = Type_list[Type_index];
         attach_component(name);
         //if(name=="player"||name=="static_monster")
         //{//add one more component for player and static_monster
