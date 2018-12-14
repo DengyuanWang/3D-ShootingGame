@@ -348,8 +348,9 @@ void Animated_Model::Render(float currentFrame, glm::mat4 model, glm::mat4 view,
     }
 
     // FIXING WEIRD MODEL UPSIDE DOWN BUG
-    model = glm::translate(model, vec3(0,0,-5));
-    model = glm::rotate(model, glm::pi<float>(), vec3(0,1,0));
+    model = glm::translate(model, vec3(0,0,7));
+    model = glm::rotate(model, 3 * glm::half_pi<float>(), vec3(1,0,0));
+    model = glm::scale(model, glm::vec3(0.4, 0.4, 0.4));
     GLint unicolor = glGetUniformLocation(shader, "inColor");
     glm::vec3 colVec(0.2f, 0.2f, 0.2f);
     glUniform3fv(unicolor, 1, glm::value_ptr(colVec));
