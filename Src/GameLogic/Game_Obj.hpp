@@ -8,7 +8,7 @@
 
 #ifndef Game_Obj_hpp
 #define Game_Obj_hpp
-#include "../Graphics/Model_loader.hpp"
+#include "../Graphics/Animated_Model.hpp"
 #include "../Script/Includer.h"
 using namespace std;
 class Game_Obj{

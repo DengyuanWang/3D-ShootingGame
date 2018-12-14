@@ -143,7 +143,7 @@ bool GUI_OpenGL::load_models() {
         ifstream modelFile;
 
         if (Model_names[i] == "player") {
-            Model_loader *playerLoader = new Model_loader();
+            Animated_Model *playerLoader = new Animated_Model();
             playerVao = playerLoader->LoadModel(playerPath, ShaderProgram);
 
         } else {

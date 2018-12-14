@@ -1,5 +1,5 @@
 //
-//  Model_loader.hpp
+//  Animated_Model.hpp
 //  3D_MazeGame
 //
 //  Created by 王登远 on 11/17/18.
@@ -29,7 +29,7 @@ using namespace std;
 
 #define BONES_PER_VERTEX 4
 
-class Model_loader{
+class Animated_Model{
 private:
     struct BoneInfo
     {
@@ -85,9 +85,24 @@ private:
     const aiScene *scene;
     Assimp::Importer importer;
 
+    // Animation Transform Functions
+    void CalcInterpScaling(aiVector3D &out, float animTime, const aiNodeAnim *nodeAnim);
+    void CalcInterpRotating(aiQuaternion &out, float animTime, const aiNodeAnim *nodeAnim);
+    void CalcInterpPosition(aiVector3D &out, float animTime, const aiNodeAnim *nodeAnim);
+    uint FindScaling(float animTime, const aiNodeAnim *nodeAnim);
+    uint FindRotation(float animTime, const aiNodeAnim *nodeAnim);
+    uint FindPosition(float animTime, const aiNodeAnim *nodeAnim);
+    const aiNodeAnim *FindNodeAnim(const aiAnimation *animation, const string nodeName);
+    void ReadNodeHierarchy(float animTime, const aiNode *node, const aiMatrix4x4 &parentTransform);
+
+    glm::mat4 convertMatrix(const aiMatrix4x4 &mat);
+
+
 public:
-    Model_loader();
-    ~Model_loader();
+    Animated_Model();
+    ~Animated_Model();
+
+    void BoneTransform(float seconds, vector<glm::mat4> &transforms);
 
     GLuint LoadModel(const std::string &modelfn, GLuint shader);
 

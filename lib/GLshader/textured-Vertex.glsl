@@ -20,15 +20,33 @@ uniform mat4 view;
 uniform mat4 proj;
 uniform vec3 inColor;
 
+uniform bool animated;
+
 const int MAX_BONES = 100;
 uniform mat4 global_bones[MAX_BONES];
 
+void animateModel(){
+}
+
 void main() {
-   Color = inColor;
-   gl_Position = proj * view * model * vec4(position,1.0);
-   pos = (view * model * vec4(position,1.0)).xyz;
-   lightDir = (view * vec4(inLightDir,0.0)).xyz; //It's a vector!
-   vec4 norm4 = transpose(inverse(view*model)) * vec4(inNormal,0.0);
-   vertNormal = normalize(norm4.xyz);
-   texcoord = inTexcoord;
+    vec4 iPos = vec4(position, 1.0);
+    vec4 iNorm = vec4(inNormal, 0.0);
+
+    if(animated) {
+        mat4 bonetransform = global_bones[in_boneIDs[0]] * in_boneWeights[0];
+        bonetransform     += global_bones[in_boneIDs[1]] * in_boneWeights[1];
+        bonetransform     += global_bones[in_boneIDs[2]] * in_boneWeights[2];
+        bonetransform     += global_bones[in_boneIDs[3]] * in_boneWeights[3];
+
+        iPos = bonetransform * vec4(position, 1.0);
+        iNorm = (bonetransform * vec4(inNormal, 0.0));
+    }
+
+    Color = inColor;
+    gl_Position = proj * view * model * iPos;
+    pos = (view * model * iPos).xyz;
+    lightDir = (view * vec4(inLightDir,0.0)).xyz; //It's a vector!
+    vec4 norm4 = transpose(inverse(view*model)) * iNorm;
+    vertNormal = normalize(norm4.xyz);
+    texcoord = inTexcoord;
 }
