@@ -13,7 +13,7 @@ using namespace glm;
 Animated_Model::Animated_Model() {}
 Animated_Model::~Animated_Model() {}
 
-GLuint Animated_Model::LoadModel(const std::string &modelfn, GLuint s) {
+bool Animated_Model::LoadModel(const std::string &modelfn, GLuint s) {
     shader = s;
 
     bool success = false;
@@ -37,15 +37,11 @@ GLuint Animated_Model::LoadModel(const std::string &modelfn, GLuint s) {
         std::cerr << "Error parsing collada file " << modelfn << importer.GetErrorString() << std::endl;
     }
 
-    if(!success) {
-//        std::cerr << "Error Initializing scene " << std::endl;
-    }
-
     cout << "Player Model Loaded " << numIndices << " indices " << numBones << " bones" << endl;
 
     glBindVertexArray(0);
 
-    return vao;
+    return success;
 }
 
 bool Animated_Model::InitFromScene(const aiScene *scene) {
@@ -338,6 +334,38 @@ void Animated_Model::BoneTransform(float seconds, vector<glm::mat4> &transforms)
     for(uint i = 0; i < numBones; i++){
         transforms[i] = convertMatrix(boneInfo[i].finalTransform);
     }
+}
+
+void Animated_Model::Render(float currentFrame, glm::mat4 model, glm::mat4 view, glm::mat4 proj, bool running) {
+    glBindVertexArray(vao);
+    vector<mat4> boneTransforms;
+    if(!running){currentFrame = 0.4f;}
+
+    BoneTransform(currentFrame, boneTransforms);
+    for(int i = 0; i < boneTransforms.size(); i++){
+        assert(i < 100);
+        glUniformMatrix4fv(boneLocations[i], 1, GL_TRUE, glm::value_ptr(boneTransforms[i]));
+    }
+
+    // FIXING WEIRD MODEL UPSIDE DOWN BUG
+    model = glm::translate(model, vec3(0,0,-5));
+    model = glm::rotate(model, glm::pi<float>(), vec3(0,1,0));
+    GLint unicolor = glGetUniformLocation(shader, "inColor");
+    glm::vec3 colVec(0.2f, 0.2f, 0.2f);
+    glUniform3fv(unicolor, 1, glm::value_ptr(colVec));
+
+    GLint uniModel = glGetUniformLocation(shader, "model");
+    glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
+
+    GLint uniView = glGetUniformLocation(shader, "view");
+    glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
+
+    GLint uniProj = glGetUniformLocation(shader, "proj");
+    glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(proj));
+
+    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
 }
 
 void Animated_Model::VertexBoneData::AddBoneData(uint boneID, float weight) {

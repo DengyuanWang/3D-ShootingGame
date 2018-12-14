@@ -103,8 +103,9 @@ public:
     ~Animated_Model();
 
     void BoneTransform(float seconds, vector<glm::mat4> &transforms);
+    void Render(float currentFrame, glm::mat4 model, glm::mat4 view, glm::mat4 proj, bool running);
 
-    GLuint LoadModel(const std::string &modelfn, GLuint shader);
+    bool LoadModel(const std::string &modelfn, GLuint shader);
 
 };
 

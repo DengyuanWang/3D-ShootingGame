@@ -143,9 +143,11 @@ bool GUI_OpenGL::load_models() {
         ifstream modelFile;
 
         if (Model_names[i] == "player") {
-            Animated_Model *playerLoader = new Animated_Model();
-            playerVao = playerLoader->LoadModel(playerPath, ShaderProgram);
-
+            playerModel = new Animated_Model();
+            if (!playerModel->LoadModel(playerPath, ShaderProgram)) {
+//                std::cerr << "Error loading player model" << std::endl;
+                // TODO Track down this error
+            }
         } else {
             string full_filename = modelPath + Model_names[i] + ".txt";
             modelFile.open(full_filename);
@@ -241,10 +243,13 @@ bool GUI_OpenGL::draw_model(glm::mat4 view, glm::mat4 model, string model_name, 
     GLint uniTexID = glGetUniformLocation(ShaderProgram, "texID");
     glUniform1i(uniTexID, tag);
 
-
-    glBindVertexArray(Vbos[index]);  //Bind the VAO for the shaders we are using
-    glBindBuffer(GL_ARRAY_BUFFER, Vbos[index]);
-    glDrawArrays(GL_TRIANGLES, 0, NumVerts[index]); //Number of vertices
+    if(model_name == "player"){
+        draw_player(currentFrame, model, view, proj, true);
+    }else {
+        glBindVertexArray(Vbos[index]);  //Bind the VAO for the shaders we are using
+        glBindBuffer(GL_ARRAY_BUFFER, Vbos[index]);
+        glDrawArrays(GL_TRIANGLES, 0, NumVerts[index]); //Number of vertices
+    }
 
     return true;
 }
@@ -311,3 +316,12 @@ char *GUI_OpenGL::readShaderSource(const char *shaderFile) {
     // return the string
     return buffer;
 }
+
+bool GUI_OpenGL::draw_player(float currentFrame, glm::mat4 model, glm::mat4 view, glm::mat4 proj, bool running) {
+    playerModel->Render(currentFrame, model, view, proj, running);
+}
+
+void GUI_OpenGL::set_current_frame(float frame) {
+    currentFrame = frame;
+}
+

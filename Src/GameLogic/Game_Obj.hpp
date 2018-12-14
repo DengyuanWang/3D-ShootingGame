@@ -48,7 +48,8 @@ public:
     Component* get_component(string component_name);
     void Update(UI_Event &input_event);
     bool check_collision(Game_Obj *ptr);//check collision with other Game obj
-    
+// If model has animation
+
     string get_type(){return Type_list[Type_index];};
 };
 

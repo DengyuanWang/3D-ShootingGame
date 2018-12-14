@@ -130,9 +130,9 @@ bool UI::Init_openGL()
 bool UI::Draw(vector<string> model_names,vector<glm::mat4> model_matrixs,vector<string> textures)
 {
     gui_gl.clear_screen();
+    gui_gl.set_current_frame(SDL_GetTicks() / 1000.0f);
     for(int i=0;i<model_names.size();i++)
     {
-        
         if(!gui_gl.draw_model(View_matrix,model_matrixs[i],model_names[i],textures[i]))
         {
             cout<<"draw model fail"<<i<<endl;
