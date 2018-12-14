@@ -10,7 +10,7 @@
 #define Model_loader_hpp
 #include <iostream>
 #include <SDL2/SDL.h>
-#include <SDL2_mixer/SDL_mixer.h>
+//#include <SDL2_mixer/SDL_mixer.h>
 #include <fstream>
 #include <algorithm>
 #include <sstream>

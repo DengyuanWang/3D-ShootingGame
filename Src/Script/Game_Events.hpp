@@ -8,6 +8,7 @@
 
 #ifndef Game_Events_hpp
 #define Game_Events_hpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #include "../UI/UI_Event.hpp"

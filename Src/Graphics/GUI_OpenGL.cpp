@@ -9,6 +9,20 @@
 
 #include "GUI_OpenGL.hpp"
 
+#if defined(__APPLE__)
+const string shaderPath = "/lib/GLshader/";
+const string modelPath = "/lib/models/";
+const string woodPath = "lib/textures/wood.bmp";
+const string brickPath = "lib/textures/brick.bmp";
+#elif defined(__linux__)
+const string shaderPath = "../lib/GLshader/";
+const string modelPath = "../lib/models/";
+const string woodPath = "../lib/textures/wood.bmp";
+const string brickPath = "../lib/textures/brick.bmp";
+#endif
+
+
+
 vector<string>
     GUI_OpenGL::Model_names = {"knot","sphere","cube","teapot","teapotLowPoly"};
 GUI_OpenGL::GUI_OpenGL()
@@ -46,7 +60,7 @@ bool GUI_OpenGL::init_Opengl()
     
     
     //// Allocate Texture 0 (Wood) ///////
-    SDL_Surface* surface = SDL_LoadBMP("lib/textures/wood.bmp");
+    SDL_Surface* surface = SDL_LoadBMP(woodPath.c_str());
     if (surface==NULL){ //If it failed, print the error
         printf("Error: \"%s\"\n",SDL_GetError()); return 1;
     }
@@ -67,7 +81,7 @@ bool GUI_OpenGL::init_Opengl()
     //// End Allocate Texture ///////
     
     //// Allocate Texture 1 (Brick) ///////
-    SDL_Surface* surface1 = SDL_LoadBMP("lib/textures/brick.bmp");
+    SDL_Surface* surface1 = SDL_LoadBMP(brickPath.c_str());
     if (surface==NULL){ //If it failed, print the error
         printf("Error: \"%s\"\n",SDL_GetError()); return 1;
     }
@@ -123,7 +137,7 @@ bool GUI_OpenGL::load_models()
     for(int i=0;i<Model_names.size();i++)//load all models
     {
         ifstream modelFile;
-        string full_filename ="lib/models/"+Model_names[i]+".txt";
+        string full_filename = modelPath+Model_names[i]+".txt";
         modelFile.open(full_filename);
         int numLines = 0;
         modelFile >> numLines;
@@ -252,7 +266,7 @@ GUI_OpenGL::~GUI_OpenGL()
     }
 }
 char* GUI_OpenGL::readShaderSource(const char* shaderFile){
-    string name = shaderFile;name = "lib/GLshader/"+name+".txt";
+    string name = shaderFile; name = shaderPath+name+".txt";
     FILE *fp;
     long length;
     char *buffer;

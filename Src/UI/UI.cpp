@@ -54,6 +54,7 @@ bool UI::open_window()//init SDL and open a window
 
     GL_context = SDL_GL_CreateContext(Window); //Bind OpenGL to the window
     SDL_ShowCursor(0);
+//  TODO
     SDL_SetRelativeMouseMode(SDL_TRUE);
     return true;
 }
@@ -72,7 +73,7 @@ bool UI::close_window()//close window
 
 bool UI::full_screen_switch()//switch between full screen or not
 {
-    Fullscreen = !Fullscreen;
+    Fullscreen = false;// !Fullscreen;
     SDL_SetWindowFullscreen(Window, Fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
     return true;
 }

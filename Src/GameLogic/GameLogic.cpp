@@ -5,8 +5,14 @@
 //  Created by 王登远 on 11/15/18.
 //  Copyright © 2018 Dengyuan Wang. All rights reserved.
 //
-
 #include "GameLogic.hpp"
+
+#if defined(__APPLE__)
+const string mapPath = "lib/maps/";
+#elif defined(__linux__)
+const string mapPath = "../lib/maps/";
+#endif
+
 GameLogic::GameLogic()
 {
     if(!ui.open_window())//open new window
@@ -29,7 +35,7 @@ void GameLogic::restart()
     //Formate:
     //    index Objname model texture size[fx,fy,fz] position[x y z] boxcollider[x y z] colliderpos_offset[x y z]
     string mapname = "testmap";
-    string full_filename ="lib/maps/"+mapname+".txt";
+    string full_filename =mapPath+mapname+".txt";
     ifstream mapFile(full_filename);
     string tmp;
     while(getline(mapFile,tmp))
