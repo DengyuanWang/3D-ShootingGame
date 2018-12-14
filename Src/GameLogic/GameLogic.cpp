@@ -55,7 +55,7 @@ void GameLogic::set_view()
      */
     glm::mat4 tmpmat = G_objs[player_index].get_Model();
     //get pose, camera is a little higher than player
-    float len =sqrt(pow(tmpmat[0].x,2)+pow(tmpmat[0].y,2)+pow(tmpmat[0].z,2));
+    float len =sqrt((pow(tmpmat[0].x,2)+pow(tmpmat[0].y,2)+pow(tmpmat[0].z,2)));
     //cout<<"x"<<tmpmat[3].x<<"y"<<tmpmat[3].y<<"z"<<tmpmat[3].z<<endl;
     glm::vec4 offset = tmpmat*eye_pos_offset/len;
     glm::vec3 eye_pos = glm::vec3(tmpmat[3])+glm::vec3(offset.x,offset.y,offset.z);

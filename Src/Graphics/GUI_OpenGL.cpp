@@ -266,7 +266,7 @@ GUI_OpenGL::~GUI_OpenGL()
     }
 }
 char* GUI_OpenGL::readShaderSource(const char* shaderFile){
-    string name = shaderFile; name = shaderPath+name+".txt";
+    string name = shaderFile; name = shaderPath+name+".glsl";
     FILE *fp;
     long length;
     char *buffer;
