@@ -18,6 +18,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/rotate_vector.hpp"
+#include "glm/gtx/quaternion.hpp"
 struct ThreeDPOS{
     int x,y,z;
     ThreeDPOS(glm::vec3 in_vec): x(in_vec.x),y(in_vec.y),z(in_vec.z){};

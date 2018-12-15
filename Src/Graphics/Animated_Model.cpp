@@ -145,6 +145,7 @@ bool Animated_Model::InitMesh(const aiMesh *inMesh, vector<glm::vec3> &positions
         indices.push_back(face.mIndices[1]);
         indices.push_back(face.mIndices[2]);
     }
+    return true;
 }
 
 void Animated_Model::LoadBones(const aiMesh *inMesh, vector<Animated_Model::VertexBoneData> &bones) {

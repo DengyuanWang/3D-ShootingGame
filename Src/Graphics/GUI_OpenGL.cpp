@@ -10,11 +10,11 @@
 #include "GUI_OpenGL.hpp"
 
 #if defined(__APPLE__)
-const string shaderPath = "/lib/GLshader/";
-const string modelPath = "/lib/models/";
-const string woodPath = "lib/textures/wood.bmp";
-const string brickPath = "lib/textures/brick.bmp";
-const string playerPath = "lib/models/ninja.dae";
+const string shaderPath = "./lib/GLshader/";
+const string modelPath = "./lib/models/";
+const string woodPath = "./lib/textures/wood.bmp";
+const string brickPath = "./lib/textures/brick.bmp";
+const string playerPath = "./lib/models/ninja.dae";
 #elif defined(__linux__)
 const string shaderPath = "../lib/GLshader/";
 const string modelPath = "../lib/models/";
@@ -319,6 +319,7 @@ char *GUI_OpenGL::readShaderSource(const char *shaderFile) {
 
 bool GUI_OpenGL::draw_player(float currentFrame, glm::mat4 model, glm::mat4 view, glm::mat4 proj, bool running) {
     playerModel->Render(currentFrame, model, view, proj, running);
+    return true;
 }
 
 void GUI_OpenGL::set_current_frame(float frame) {

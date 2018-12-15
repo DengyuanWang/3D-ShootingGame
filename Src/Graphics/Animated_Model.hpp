@@ -20,11 +20,11 @@
 #include <sstream>
 #include <vector>
 #include "../../lib/Includer.h"
-
+/*
 #include "../glm/glm.hpp"
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../glm/gtx/quaternion.hpp"
-
+*/
 using namespace std;
 
 #define BONES_PER_VERTEX 4

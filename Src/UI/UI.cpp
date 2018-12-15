@@ -73,7 +73,7 @@ bool UI::close_window()//close window
 
 bool UI::full_screen_switch()//switch between full screen or not
 {
-    Fullscreen = false;// !Fullscreen;
+    Fullscreen = !Fullscreen;
     SDL_SetWindowFullscreen(Window, Fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
     return true;
 }
