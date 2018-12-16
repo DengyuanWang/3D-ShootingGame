@@ -34,7 +34,7 @@ void GameLogic::restart()
 //load map
     //Formate:
     //    index Objname model texture size[fx,fy,fz] position[x y z] boxcollider[x y z] colliderpos_offset[x y z]
-    string mapname = "testmap";
+    string mapname = "map1";
     string full_filename =mapPath+mapname+".txt";
     ifstream mapFile(full_filename);
     string tmp;

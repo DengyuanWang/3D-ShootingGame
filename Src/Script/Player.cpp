@@ -14,7 +14,7 @@ Player::Player(void *ptr_in){
     Speed = 10;//default as 1
     Abilities.push_back("Walk");//default as "walk"
     ViewAt_vector = glm::vec4(0,0,0.2f,0);
-    eye_pos_offset = glm::vec4(0.01f,0.02f,-0.25f,0);
+    eye_pos_offset = glm::vec4(0.01f,0.1f,-0.25f,0);
     Component_name = "Player";
     Game_Obj* ptr;
     ptr = (Game_Obj*)ptr_in;
