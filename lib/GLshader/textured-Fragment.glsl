@@ -13,7 +13,7 @@ uniform sampler2D tex1;
 
 uniform int texID;
 
-const float ambient = .3;
+const float ambient = .5;
 void main() {
   vec3 color;
   if (texID == -1)
