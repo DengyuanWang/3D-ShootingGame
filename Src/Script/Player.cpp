@@ -55,6 +55,10 @@ void Player::update_view(UI_Event &UIEvent,void* ptr_in)
                     Gptr->set_event("Player_dead", true);
             }
         }
+        if(ptr2->get_type()=="moving_monster")
+        {
+            Gptr->set_event("Player_dead", true);
+        }
     }
     //Player controller:
     //jump

@@ -86,10 +86,10 @@ void Weapon::Update(UI_Event &uievent,void* ptr_in)
 }
 Bullet::Bullet(void *ptr_in){
     Game_Events *Gptr = (Game_Events*)Gevent_list;
-    speed = 1;
+    speed = .5f;
     born_time = Gptr->currentTime;
-    life = 2;
-    size = glm::vec3{.1,.1,.2};
+    life = 3;
+    size = glm::vec3{.2,.2,.3};
     Component_name = "Bullet";
     Game_Obj* ptr;
     ptr = (Game_Obj*)ptr_in;
@@ -110,9 +110,9 @@ void Bullet::Update(UI_Event &uievent,void* ptr_in)
         return;
     }
     //check if need to destory when collide with others
-    if(Gobj_ptr->collision_indices.size()>0)
+    for(int k=0;k<Gobj_ptr->collision_indices.size();k++)
     {
-        int i =Gobj_ptr->collision_indices[0];
+        int i =Gobj_ptr->collision_indices[k];
         string collide_name = (*Gobj_list_ptr)[i].get_type();
         bool erase_tag = false;
         if((*Gobj_list_ptr)[i].get_type()!="bullet")//collide with bullet

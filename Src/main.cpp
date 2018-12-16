@@ -63,10 +63,10 @@ void generate_map()
         if(i==0||i==mapsize[0]-1||j==0||j==mapsize[1]-1)
             map_tag[i][j] = 1;
         else{
-            int t =rand()%20;
-            if(t<18)
+            int t =rand()%200;
+            if(t<180)
                 map_tag[i][j] = 0;
-            else if(t<19)
+            else if(t<185)
                 map_tag[i][j] = 5;
             else
                 map_tag[i][j] = 1;
@@ -75,7 +75,7 @@ void generate_map()
     }
     std::vector<int> posX;
     std::vector<int> posY;
-    for(int i=0;i<30;i++)
+    for(int i=0;i<100;i++)
     {
         posX.push_back(int(rand()%mapsize[0]));
         posY.push_back(int(rand()%mapsize[1]));
@@ -86,9 +86,13 @@ void generate_map()
     std::vector<int> posY1(posSetY.begin(),posSetY.end());
     map_tag[posX1[0]][posY1[0]]=3;//player
     map_tag[posX1[1]][posY1[1]]=4;//final_gate
-    for(int i=2;i<3&&i<posX1.size()&&i<posY1.size();i++)
+    for(int i=2;i<5&&i<posX1.size()&&i<posY1.size();i++)
     {
        map_tag[posX1[i]][posY1[i]]=2;//set monster;
+    }
+    for(int i=6;i<10&&i<posX1.size()&&i<posY1.size();i++)
+    {
+        map_tag[posX1[i]][posY1[i]]=5;//set monster;
     }
     int index = 0;
     string space=" ",brackets="[]";
@@ -100,7 +104,7 @@ void generate_map()
     {
         //set value
         sizeV[0]=50;sizeV[1]=1;sizeV[2]=50;
-        positionV[0]=0;positionV[1]=0;positionV[2]=0;
+        positionV[0]=0;positionV[1]=-1;positionV[2]=0;
         boxcolliderV[0]=0;boxcolliderV[1]=0;boxcolliderV[2]=0;
         colliderpos_offsetV[0]=0;colliderpos_offsetV[1]=-1.0f;colliderpos_offsetV[2]=0;
         //convert to string
@@ -118,7 +122,7 @@ void generate_map()
     for(int i=0;i<mapsize[0];i++)
     for(int j=0;j<mapsize[1];j++)
     {
-        positionV[0]=i;positionV[1]=1;positionV[2]=j;
+        positionV[0]=i;positionV[1]=0;positionV[2]=j;
         if(map_tag[i][j]==1)//wall
         {
             sizeV[0]=1;sizeV[1]=1;sizeV[2]=1;
@@ -144,16 +148,15 @@ void generate_map()
         else if(map_tag[i][j]==4)//player
         {
             sizeV[0]=.1;sizeV[1]=.1;sizeV[2]=.1;
-            boxcolliderV[0]=1;boxcolliderV[1]=1;boxcolliderV[2]=.5;
+            boxcolliderV[0]=2;boxcolliderV[1]=1;boxcolliderV[2]=2;
             colliderpos_offsetV[0]=0;colliderpos_offsetV[1]=0;colliderpos_offsetV[2]=0;
             objname="player";model="player";texture="color";
         }
         else if(map_tag[i][j]==5)//Moving monster
         {
-            positionV[1]=2;
             sizeV[0]=.5;sizeV[1]=.5;sizeV[2]=.5;
-            boxcolliderV[0]=.1;boxcolliderV[1]=.1;boxcolliderV[2]=.1;
-            colliderpos_offsetV[0]=0;colliderpos_offsetV[1]=0;colliderpos_offsetV[2]=0;
+            boxcolliderV[0]=.5;boxcolliderV[1]=.5;boxcolliderV[2]=.5;
+            colliderpos_offsetV[0]=0;colliderpos_offsetV[1]=0.2;colliderpos_offsetV[2]=0;
             objname="moving_monster";model="sphere";texture="wood";
         }
         else{ continue;}
@@ -164,13 +167,6 @@ void generate_map()
         colliderpos_offset = space+brackets[0]+numberToString(colliderpos_offsetV,3)+brackets[1]+space;
         file<<index<<space<<objname+space+model+space+texture+space+size+position+boxcollider+colliderpos_offset+"\n";
     }
-    //generate FinalGate
-    
-    //generate avatar pos
-    
-    //generate static monster
-    
-    //generate move monster
     
     file.close();
 }

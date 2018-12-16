@@ -88,15 +88,15 @@ void Game_Events::Update_Collision()
             for(int j=i+1;j<Gobj_list_ptr->size();j++)
             {
                 bool rst;
-                if((*Gobj_list_ptr)[j].collider_size.x> (*Gobj_list_ptr)[i].collider_size.x)
+                if((*Gobj_list_ptr)[j].collider_size.x< (*Gobj_list_ptr)[i].collider_size.x)
                     rst =(*Gobj_list_ptr)[j].check_collision(&(*Gobj_list_ptr)[i]);
                 else rst = (*Gobj_list_ptr)[i].check_collision(&(*Gobj_list_ptr)[j]);
                 if(rst==true)
                 {
                     (*Gobj_list_ptr)[i].collision_indices.push_back(j);
                     (*Gobj_list_ptr)[j].collision_indices.push_back(i);
-                    if((*Gobj_list_ptr)[i].get_type()!="wall")
-                       cout<<(*Gobj_list_ptr)[i].get_type()<<"with"<<(*Gobj_list_ptr)[j].get_type()<<endl;;
+                    //if((*Gobj_list_ptr)[j].get_type()=="bullet")
+                      // cout<<(*Gobj_list_ptr)[i].get_type()<<"with"<<(*Gobj_list_ptr)[j].get_type()<<endl;;
                 }
             }
     }

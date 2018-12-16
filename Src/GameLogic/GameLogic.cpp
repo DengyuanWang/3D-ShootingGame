@@ -157,7 +157,7 @@ void GameLogic::add_bullets()
         stringstream ss;
 //index Objname model texture size[xyz] position[xyz] boxcollider[xyz] colliderpos_offset[xyz]
         ss<<"0 "<<"bullet "<<"sphere "<<"color "<<"[.2 .2 .2] "
-        <<"[0 0 0] "<<"[.2 .2 .2] "<<"[0 0 0]";
+        <<"[0 0 0] "<<"[.6 .6 .6] "<<"[0 0 0]";
         decode_cmd(ss.str());
         Weapon* Wptr = ((Weapon*)G_objs[index].get_component("Weapon"));
         if(Wptr!=NULL)//To fix the bug in erase, when inlegal index happened, just ignore it

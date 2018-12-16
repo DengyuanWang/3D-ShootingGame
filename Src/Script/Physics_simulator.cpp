@@ -39,6 +39,12 @@ void Physics_simulator::Update(UI_Event &UIEvent,void* ptr_in)
         Gobj_list_ptr =(vector<Game_Obj> *)Gobj_list;
         glm::vec3 pos(ptr->get_Model()[3]);
         
+ /*       if( ptr->get_type()=="bullet")
+        {
+            Last_movement = movement;
+            continue;
+        }*/
+        
         string Value="";
         int x = pos.x/3,z=pos.z/3;
         ostringstream convert1,convert2;
@@ -57,6 +63,7 @@ void Physics_simulator::Update(UI_Event &UIEvent,void* ptr_in)
                 if(index!=ptr->Index&&
                    (*Gobj_list_ptr)[index].check_collision(ptr)==true)
                 {
+                    
                     if(ptr->get_type()!="bullet")//only allow bullet to overlap with others
                     {
                         ptr->set_mat(M_stash);
@@ -66,19 +73,17 @@ void Physics_simulator::Update(UI_Event &UIEvent,void* ptr_in)
                     }
                     else{
                         //velocity = glm::vec4{0,0,0,0};
-                        return;
+                        //return;
                     }
                 }
             }
         }
         
         //check if collide with others
-        if(ptr->collision_indices.size()>0||(ptr->get_type()!="bullet"&&pos.y<1.0f))//collide with others or touch floor
+        if(ptr->collision_indices.size()>0||(ptr->get_type()!="bullet"&&pos.y<0.0f))//collide with others or touch floor
         {
             if(ptr->get_type()!="bullet")//only allow bullet to overlap with others
             {
-                if(pos.y>=1)
-                    cout<<(*Gobj_list_ptr)[ptr->collision_indices[0]].get_type()<<endl;
                 ptr->set_mat(M_stash);
                 ptr->translate(glm::vec3{-Last_movement.x,-Last_movement.y,-Last_movement.z});
                 velocity = glm::vec4{0,0,0,0};
