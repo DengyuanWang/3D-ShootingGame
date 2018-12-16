@@ -91,10 +91,9 @@ bool GameLogic::Update()
     }
 //Update all Game objs
     set_indices();
+    Gptr->Update();//update all collider informations
     for(int i=0;i<G_objs.size();i++)
         G_objs[i].Update(ui.rst);
-    
-    
 //Get camera pos
     
     Player *tmp = (Player *)(G_objs[player_index]).get_component("Player");

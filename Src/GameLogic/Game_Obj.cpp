@@ -84,6 +84,10 @@ bool Game_Obj::attach_component(string component_name)
     {
         Comp_list.push_back(new Static_M(this));
     }
+    if(component_name=="moving_monster")
+    {
+        Comp_list.push_back(new Moving_M(this));
+    }
     if(component_name=="physics_simulator")
     {
         Comp_list.push_back(new Physics_simulator(this));
@@ -110,6 +114,7 @@ void Game_Obj::Update(UI_Event &input_event)
     {
         Component* cpt;
         cpt=Comp_list[i];
+       // cout<<cpt->Component_name<<endl;
         cpt->Update(input_event,this);
     }
 }

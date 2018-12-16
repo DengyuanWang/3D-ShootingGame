@@ -14,11 +14,12 @@ Player::Player(void *ptr_in){
     Speed = 10;//default as 1
     Abilities.push_back("Walk");//default as "walk"
     ViewAt_vector = glm::vec4(0,0,0.2f,0);
-    eye_pos_offset = glm::vec4(0.01f,0.1f,-0.25f,0);
+    eye_pos_offset = glm::vec4(-0.04f,0.1f,-0.25f,0);
     Component_name = "Player";
     Game_Obj* ptr;
     ptr = (Game_Obj*)ptr_in;
     ptr->attach_component("weapon");
+    ((Weapon*)ptr->get_component("Weapon"))->Cooldown = 0.3f;
     ptr->attach_component("physics_simulator");
     ((Physics_simulator*)ptr->get_component("Physics_simulator"))->enable_gravity = true;
 }
@@ -31,12 +32,12 @@ void Player::update_view(UI_Event &UIEvent,void* ptr_in)
     Game_Events* Gptr =(Game_Events*)Gevent_list;//get game event handler
     Game_Obj* ptr;
     ptr = (Game_Obj*)ptr_in;
-    vector<void*> collision_list;
-    collision_list = ((Physics_simulator*)ptr->get_component("Physics_simulator"))->collision_list;
-    
-    for(int i=0;i<collision_list.size();i++)
+    vector<Game_Obj> *Gobj_list_ptr;
+    Gobj_list_ptr =(vector<Game_Obj> *)Gobj_list;
+    for(int i=0;i<ptr->collision_indices.size();i++)
     {
-        Game_Obj* ptr2 = (Game_Obj*)collision_list[i];
+        int j=ptr->collision_indices[i];
+        Game_Obj* ptr2 = &(*Gobj_list_ptr)[j];
         if(ptr2->get_type()=="floor") continue;
         if(ptr2->get_type()=="gate")
         {

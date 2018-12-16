@@ -13,7 +13,7 @@ Items::Items(){
     ownership="";
 }
 Weapon::Weapon(void *ptr_in){
-    Cooldown = .2;//1 second
+    Cooldown = .8f;//1 second
     Items_name = "Weapon";
     LastshotTime = 0;
     Component_name = "Weapon";
@@ -72,7 +72,7 @@ void Weapon::Update(UI_Event &uievent,void* ptr_in)
     }
     else if(Gobj_ptr->get_type()=="static_monster")
     {
-        if(Gptr->currentTime>LastshotTime+Cooldown*1000)
+        if(rand()%10<3&&Gptr->currentTime>LastshotTime+Cooldown*1000)
         {
             LastshotTime = Gptr->currentTime;
             //create bullet obj
@@ -110,36 +110,29 @@ void Bullet::Update(UI_Event &uievent,void* ptr_in)
         return;
     }
     //check if need to destory when collide with others
-    for(int i=0;i<Gobj_list_ptr->size();i++)
+    if(Gobj_ptr->collision_indices.size()>0)
     {
-        //cout<<"monster:"<<ptr->Index<<"others"<<(*Gobj_list_ptr)[i].Index<<endl;
-        if(((*Gobj_list_ptr)[i].Index)!=Gobj_ptr->Index//not self
-           &&(*Gobj_list_ptr)[i].check_collision(Gobj_ptr))//collide with others
+        int i =Gobj_ptr->collision_indices[0];
+        string collide_name = (*Gobj_list_ptr)[i].get_type();
+        bool erase_tag = false;
+        if((*Gobj_list_ptr)[i].get_type()!="bullet")//collide with bullet
         {
-            string collide_name = (*Gobj_list_ptr)[i].get_type();
-            bool erase_tag = false;
-            if((*Gobj_list_ptr)[i].get_type()!="bullet")//collide with bullet
+            if(ownership=="player")
             {
-                if(ownership=="player")
-                {
-                    if(collide_name!="player")
-                        erase_tag=true;
-                }else{
-                    if(collide_name!="static_monster"&&collide_name!="moving_monster")
-                        erase_tag=true;
-                }
-                if(erase_tag)//not ally's bullet
-                {
-                    Gptr->set_event("Erase", true);
-                    Gptr->Erase_index.push_back(Gobj_ptr->Index);
-                    return;
-                }
+                if(collide_name!="player")
+                erase_tag=true;
+            }else{
+                if(collide_name!="static_monster"&&collide_name!="moving_monster")
+                erase_tag=true;
+            }
+            if(erase_tag)//not ally's bullet
+            {
+                Gptr->set_event("Erase", true);
+                Gptr->Erase_index.push_back(Gobj_ptr->Index);
+                return;
             }
         }
     }
-    
-    
-    
     if(init_phy==false)
     {
         Physics_simulator *Pptr = (Physics_simulator*)Gobj_ptr->get_component("Physics_simulator");
@@ -147,9 +140,6 @@ void Bullet::Update(UI_Event &uievent,void* ptr_in)
         glm::vec3 V0= glm::normalize(glm::vec3{dir_vec})*speed;
         Pptr->velocity = glm::vec4{V0.x,V0.y,V0.z,0};
     }
-   // dir_vec= Gobj_ptr->get_Model()*glm::vec4{0,0,1,0};//direction equals to parent's face direction
-   // Gobj_ptr->translate(glm::normalize(glm::vec3{dir_vec})*speed);
-   // cout<<"move"<<endl;    
 }
 bool Bullet::DieBeauseOld(){
     Game_Events *Gptr = (Game_Events*)Gevent_list;

@@ -10,54 +10,86 @@
 #include "../GameLogic/Game_Obj.hpp"
 Physics_simulator::Physics_simulator(void* ptr_in){
     velocity=glm::vec4(0,0,0,0);//save current velocity of obj
-    gravity=glm::vec4{0,-2,0,0};//save gravity affects the obj
+    gravity=glm::vec4{0,-1,0,0};//save gravity affects the obj
     acceleration=glm::vec4(0,0,0,0);//save acceleration of obj
     enable_gravity = false;//true for enable
     Component_name = "Physics_simulator";
     Game_Obj* ptr;
     ptr = (Game_Obj*)ptr_in;
-    collision_list = vector<void*>{};
+    V_stash = velocity;
+    M_stash = ptr->get_Model();
 }
 void Physics_simulator::Update(UI_Event &UIEvent,void* ptr_in)
 {
-    //reset collisionlist
-    collision_list = vector<void*>{};
-    
     Game_Events* Gptr =(Game_Events*)Gevent_list;//get game event handler
     Game_Obj* ptr;
     ptr = (Game_Obj*)ptr_in;
     float max_T =(Gptr->currentTime-Gptr->lastTime)/1000.0;
-    int loop_num=5;
-    for(int i=1;i<loop_num;i++)
+
+    for(int i=0;i<10;i++)
     {
-        float dT =  max_T*(i/float(loop_num));
-        glm::vec4 V_stash = velocity;
-        glm::mat4 M_stash = ptr->get_Model();
+        float dT =  max_T*i/10;
+        V_stash = velocity;
+        M_stash = ptr->get_Model();
         
         glm::vec4 movement = calcu_movement(dT);
         ptr->translate(glm::vec3{movement.x,movement.y,movement.z});
         
         vector<Game_Obj> *Gobj_list_ptr;
         Gobj_list_ptr =(vector<Game_Obj> *)Gobj_list;
-        //check if collide with others
+        glm::vec3 pos(ptr->get_Model()[3]);
         
-        for(int i=0;i<Gobj_list_ptr->size();i++)
+        string Value="";
+        int x = pos.x/3,z=pos.z/3;
+        ostringstream convert1,convert2;
+        convert1 << x<<"-"<<z;
+        string Key = convert1.str();
+        unordered_map<string,string>::iterator got = Gptr->HashMap.find (Key);
+        if ( got != Gptr->HashMap.end() )
         {
-            if(((*Gobj_list_ptr)[i].Index)!=ptr->Index//not self
-               &&(*Gobj_list_ptr)[i].check_collision(ptr))//collide with others
+            Value = Gptr->HashMap[Key];
+            for(int i=0;i<Value.length();i++)
             {
-                collision_list.push_back(&(*Gobj_list_ptr)[i]);
-                if(ptr->get_type()!="bullet"&&(*Gobj_list_ptr)[i].get_type()!="bullet")//only allow bullet to overlap with others
+                int j = i;
+                while(i<Value.length()&&Value[i]!='|'){i++;}
+                string idx = Value.substr(j,i-j);
+                int index = std::stoi(idx);
+                if(index!=ptr->Index&&
+                   (*Gobj_list_ptr)[index].check_collision(ptr)==true)
                 {
-                    ptr->set_mat(M_stash);
-                    velocity = glm::vec4{0,0,0,0};
-                    return;
-                }else{
-                    velocity = glm::vec4{0,0,0,0};
-                    return;
+                    if(ptr->get_type()!="bullet")//only allow bullet to overlap with others
+                    {
+                        ptr->set_mat(M_stash);
+                        ptr->translate(glm::vec3{-Last_movement.x,-Last_movement.y,-Last_movement.z});
+                        velocity = glm::vec4{0,0,0,0};
+                        return;
+                    }
+                    else{
+                        //velocity = glm::vec4{0,0,0,0};
+                        return;
+                    }
                 }
             }
         }
+        
+        //check if collide with others
+        if(ptr->collision_indices.size()>0||(ptr->get_type()!="bullet"&&pos.y<1.0f))//collide with others or touch floor
+        {
+            if(ptr->get_type()!="bullet")//only allow bullet to overlap with others
+            {
+                if(pos.y>=1)
+                    cout<<(*Gobj_list_ptr)[ptr->collision_indices[0]].get_type()<<endl;
+                ptr->set_mat(M_stash);
+                ptr->translate(glm::vec3{-Last_movement.x,-Last_movement.y,-Last_movement.z});
+                velocity = glm::vec4{0,0,0,0};
+                return;
+            }
+            else{
+                //velocity = glm::vec4{0,0,0,0};
+                return;
+            }
+        }
+        Last_movement = movement;
     }
 }
 glm::vec4 Physics_simulator::calcu_movement(float dT)

@@ -27,10 +27,11 @@ class Final_gate: public Items{
 };
 class Weapon: public Items{//weapon system
 private:
-    float Cooldown;//second
+    
     unsigned int LastshotTime;
     void set_model(void *ptr_in);
 public:
+    float Cooldown;//second
     glm::mat4 Model;
     Weapon(void *ptr_in);
     void Update(UI_Event &UIEvent,void* ptr_in);

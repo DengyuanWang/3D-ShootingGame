@@ -25,6 +25,7 @@ public:
     glm::vec3 collider_size;
     glm::vec4 collider_offset;
     glm::vec4 collider_center;//relative coordinates
+    vector<int> collision_indices;
     int key[3]={0,0,0};
     string Model_name;
     string Texture_name;

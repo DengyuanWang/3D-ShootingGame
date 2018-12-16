@@ -55,7 +55,7 @@ void generate_map()
     file << "#index Objname model texture size[fx,fy,fz] position[x y z] boxcollider[x y z] colliderpos_offset[x y z]\n";
     
     int map_tag[50][50];
-    //0 for nothing,1 for wall,2 for monster, 3 for final_gate,4 for player
+    //0 for nothing,1 for wall,2 for monster, 3 for final_gate,4 for player,5 moving_monster
     
     for(int i=0;i<mapsize[0];i++)
     for(int j=0;j<mapsize[1];j++)
@@ -64,8 +64,10 @@ void generate_map()
             map_tag[i][j] = 1;
         else{
             int t =rand()%20;
-            if(t<17)
+            if(t<18)
                 map_tag[i][j] = 0;
+            else if(t<19)
+                map_tag[i][j] = 5;
             else
                 map_tag[i][j] = 1;
 
@@ -98,9 +100,9 @@ void generate_map()
     {
         //set value
         sizeV[0]=50;sizeV[1]=1;sizeV[2]=50;
-        positionV[0]=0;positionV[1]=0;positionV[2]=25;
-        boxcolliderV[0]=50;boxcolliderV[1]=1;boxcolliderV[2]=50;
-        colliderpos_offsetV[0]=0;colliderpos_offsetV[1]=-.2;colliderpos_offsetV[2]=0;
+        positionV[0]=0;positionV[1]=0;positionV[2]=0;
+        boxcolliderV[0]=0;boxcolliderV[1]=0;boxcolliderV[2]=0;
+        colliderpos_offsetV[0]=0;colliderpos_offsetV[1]=-1.0f;colliderpos_offsetV[2]=0;
         //convert to string
         size = space+brackets[0]+ numberToString(sizeV,3) +brackets[1]+space;
         position = space+brackets[0]+numberToString(positionV,3) +brackets[1]+space;
@@ -120,14 +122,15 @@ void generate_map()
         if(map_tag[i][j]==1)//wall
         {
             sizeV[0]=1;sizeV[1]=1;sizeV[2]=1;
-            boxcolliderV[0]=.7;boxcolliderV[1]=.5;boxcolliderV[2]=.7;
-            colliderpos_offsetV[0]=0;colliderpos_offsetV[1]=0.2;colliderpos_offsetV[2]=0;
+            boxcolliderV[0]=.7;boxcolliderV[1]=.7;boxcolliderV[2]=.7;
+            colliderpos_offsetV[0]=0;colliderpos_offsetV[1]=0;colliderpos_offsetV[2]=0;
             objname="wall";model="cube";texture="brick";
         }
         else if(map_tag[i][j]==2)//monster
         {
-            sizeV[0]=1;sizeV[1]=1;sizeV[2]=1;
-            boxcolliderV[0]=.7;boxcolliderV[1]=.5;boxcolliderV[2]=.7;
+            
+            sizeV[0]=.5;sizeV[1]=.5;sizeV[2]=.5;
+            boxcolliderV[0]=.5;boxcolliderV[1]=.5;boxcolliderV[2]=.5;
             colliderpos_offsetV[0]=0;colliderpos_offsetV[1]=0.2;colliderpos_offsetV[2]=0;
             objname="static_monster";model="knot";texture="wood";
         }
@@ -144,6 +147,14 @@ void generate_map()
             boxcolliderV[0]=1;boxcolliderV[1]=1;boxcolliderV[2]=.5;
             colliderpos_offsetV[0]=0;colliderpos_offsetV[1]=0;colliderpos_offsetV[2]=0;
             objname="player";model="player";texture="color";
+        }
+        else if(map_tag[i][j]==5)//Moving monster
+        {
+            positionV[1]=2;
+            sizeV[0]=.5;sizeV[1]=.5;sizeV[2]=.5;
+            boxcolliderV[0]=.1;boxcolliderV[1]=.1;boxcolliderV[2]=.1;
+            colliderpos_offsetV[0]=0;colliderpos_offsetV[1]=0;colliderpos_offsetV[2]=0;
+            objname="moving_monster";model="sphere";texture="wood";
         }
         else{ continue;}
         //convert to string
