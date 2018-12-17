@@ -122,10 +122,10 @@ bool GUI_OpenGL::init_Opengl() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface1->w, surface1->h, 0, GL_BGR, GL_UNSIGNED_BYTE, surface1->pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface2->w, surface2->h, 0, GL_BGR, GL_UNSIGNED_BYTE, surface2->pixels);
     glGenerateMipmap(GL_TEXTURE_2D); //Mip maps the texture
 
-    SDL_FreeSurface(surface1);
+    SDL_FreeSurface(surface2);
     //// End Allocate Texture ///////
     Texs.push_back(tex0);
     Texs.push_back(tex1);
