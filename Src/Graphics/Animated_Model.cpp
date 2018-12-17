@@ -359,6 +359,10 @@ void Animated_Model::Render(float currentFrame, glm::mat4 model, glm::mat4 view,
     glm::vec3 colVec(0.2f, 0.2f, 0.2f);
     glUniform3fv(unicolor, 1, glm::value_ptr(colVec));
 
+    glUniform1i(glGetUniformLocation(shader, "texID"), 3);
+
+
+
     GLint uniModel = glGetUniformLocation(shader, "model");
     glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
 

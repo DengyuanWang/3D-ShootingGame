@@ -155,6 +155,7 @@ bool GUI_OpenGL::init_Opengl() {
     Texs.push_back(tex2);
     Texs.push_back(tex3);
 
+
     return true;
 }
 
@@ -276,6 +277,10 @@ bool GUI_OpenGL::draw_model(glm::mat4 view, glm::mat4 model, string model_name, 
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, Texs[2]);//brick
     glUniform1i(glGetUniformLocation(ShaderProgram, "tex2"), 2);
+
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, Texs[3]);
+    glUniform1i(glGetUniformLocation(ShaderProgram, "tex3"), 3);
 
     GLint uniModel = glGetUniformLocation(ShaderProgram, "model");
     glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));

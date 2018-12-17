@@ -11,6 +11,7 @@ out vec4 outColor;
 uniform sampler2D tex0;
 uniform sampler2D tex1;
 uniform sampler2D tex2;
+uniform sampler2D tex3;
 
 uniform int texID;
 
@@ -19,12 +20,14 @@ void main() {
   vec3 color;
   if (texID == -1)
     color = Color;
-  else if (texID == 0)
+  else if (texID == 0) //brick
     color = texture(tex0, texcoord).rgb;
-  else if (texID == 1)
+  else if (texID == 1) //wood
     color = texture(tex1, texcoord).rgb;
-  else if (texID == 2)
+  else if (texID == 2) //cannon
     color = texture(tex2, texcoord).rgb;
+  else if (texID == 3) //ninja
+    color = texture(tex3, texcoord).rgb;
   else{
     outColor = vec4(1,0,0,1);
     return; //This was an error, stop lighting!
