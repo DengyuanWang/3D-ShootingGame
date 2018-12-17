@@ -48,7 +48,7 @@ int main(int argc, const char * argv[]) {
 }
 void generate_map()
 {
-    int mapsize[2]={15,15};
+    int mapsize[2]={16,16};
     string filename = "./lib/maps/map1.txt";
     ofstream file;
     file.open (filename);
@@ -84,8 +84,7 @@ void generate_map()
     std::set<int> posSetY(posY.begin(),posY.end());
     std::vector<int> posX1(posSetX.begin(),posSetX.end());
     std::vector<int> posY1(posSetY.begin(),posSetY.end());
-    map_tag[posX1[0]][posY1[0]]=3;//player
-    map_tag[posX1[1]][posY1[1]]=4;//final_gate
+    
     for(int i=2;i<5&&i<posX1.size()&&i<posY1.size();i++)
     {
        map_tag[posX1[i]][posY1[i]]=2;//set monster;
@@ -94,6 +93,8 @@ void generate_map()
     {
         map_tag[posX1[i]][posY1[i]]=5;//set monster;
     }
+    map_tag[posX1[rand()%10]][posY1[rand()%10]]=3;//player
+    map_tag[mapsize[0]/2][mapsize[1]/2]=4;//final_gate
     int index = 0;
     string space=" ",brackets="[]";
     string objname="floor",model="cube",texture="wood",size="[]";
@@ -136,7 +137,7 @@ void generate_map()
             sizeV[0]=.5;sizeV[1]=.5;sizeV[2]=.5;
             boxcolliderV[0]=.5;boxcolliderV[1]=.5;boxcolliderV[2]=.5;
             colliderpos_offsetV[0]=0;colliderpos_offsetV[1]=0.2;colliderpos_offsetV[2]=0;
-            objname="static_monster";model="knot";texture="wood";
+            objname="static_monster";model="cannon";texture="cannon";
         }
         else if(map_tag[i][j]==3)//final_gate
         {
@@ -148,7 +149,7 @@ void generate_map()
         else if(map_tag[i][j]==4)//player
         {
             sizeV[0]=.1;sizeV[1]=.1;sizeV[2]=.1;
-            boxcolliderV[0]=2;boxcolliderV[1]=1;boxcolliderV[2]=2;
+            boxcolliderV[0]=1.4f;boxcolliderV[1]=1;boxcolliderV[2]=1.4f;
             colliderpos_offsetV[0]=0;colliderpos_offsetV[1]=0;colliderpos_offsetV[2]=0;
             objname="player";model="player";texture="color";
         }
@@ -157,7 +158,7 @@ void generate_map()
             sizeV[0]=.5;sizeV[1]=.5;sizeV[2]=.5;
             boxcolliderV[0]=.5;boxcolliderV[1]=.5;boxcolliderV[2]=.5;
             colliderpos_offsetV[0]=0;colliderpos_offsetV[1]=0.2;colliderpos_offsetV[2]=0;
-            objname="moving_monster";model="sphere";texture="wood";
+            objname="moving_monster";model="slime";texture="wood";
         }
         else{ continue;}
         //convert to string
