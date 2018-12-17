@@ -15,6 +15,7 @@ const string modelPath = "./lib/models/";
 const string woodPath = "./lib/textures/wood.bmp";
 const string cannonPath = "./lib/textures/cannon.bmp";
 const string brickPath = "./lib/textures/brick.bmp";
+const string ninjaTexPath = "./lib/textures/ninja.bmp";
 const string playerPath = "./lib/models/ninja.dae";
 #elif defined(__linux__)
 const string shaderPath = "../lib/GLshader/";
@@ -22,9 +23,9 @@ const string modelPath = "../lib/models/";
 const string woodPath = "../lib/textures/wood.bmp";
 const string cannonPath = "../lib/textures/cannon.bmp";
 const string brickPath = "../lib/textures/brick.bmp";
+const string ninjaTexPath = "../lib/textures/ninja.bmp";
 const string playerPath = "../lib/models/ninja.dae";
 #endif
-
 
 vector<string>
         GUI_OpenGL::Model_names = {"slime", "cannon", "knot", "sphere", "cube", "teapot", "teapotLowPoly", "player"};
@@ -126,9 +127,33 @@ bool GUI_OpenGL::init_Opengl() {
     glGenerateMipmap(GL_TEXTURE_2D); //Mip maps the texture
 
     SDL_FreeSurface(surface2);
+
+    //// Allocate Texture 3 (Ninja) ///////
+    SDL_Surface *surface3 = SDL_LoadBMP(ninjaTexPath.c_str());
+    if (surface3 == NULL) { //If it failed, print the error
+        printf("Error: \"%s\"\n", SDL_GetError());
+        return 1;
+    }
+    GLuint tex3;
+    glGenTextures(1, &tex3);
+
+    //Load the texture into memory
+    glActiveTexture(GL_TEXTURE3);
+
+    glBindTexture(GL_TEXTURE_2D, tex3);
+    //What to do outside 0-1 range
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface3->w, surface3->h, 0, GL_BGR, GL_UNSIGNED_BYTE, surface3->pixels);
+    glGenerateMipmap(GL_TEXTURE_2D); //Mip maps the texture
+
+    SDL_FreeSurface(surface3);
     //// End Allocate Texture ///////
     Texs.push_back(tex0);
     Texs.push_back(tex1);
+    Texs.push_back(tex2);
+    Texs.push_back(tex3);
 
     return true;
 }
