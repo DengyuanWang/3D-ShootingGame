@@ -235,6 +235,8 @@ bool GUI_OpenGL::draw_model(glm::mat4 view, glm::mat4 model, string model_name, 
         tag = 0;
     else if (texture == "brick")
         tag = 1;
+    else if (texture == "cannon")
+        tag = 2;
     else tag = -1;
     glUseProgram(ShaderProgram);
 
@@ -246,6 +248,9 @@ bool GUI_OpenGL::draw_model(glm::mat4 view, glm::mat4 model, string model_name, 
     glBindTexture(GL_TEXTURE_2D, Texs[1]);//brick
     glUniform1i(glGetUniformLocation(ShaderProgram, "tex1"), 1);
 
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, Texs[2]);//brick
+    glUniform1i(glGetUniformLocation(ShaderProgram, "tex2"), 2);
 
     GLint uniModel = glGetUniformLocation(ShaderProgram, "model");
     glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
