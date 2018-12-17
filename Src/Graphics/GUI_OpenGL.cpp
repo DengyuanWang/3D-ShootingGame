@@ -13,19 +13,21 @@
 const string shaderPath = "./lib/GLshader/";
 const string modelPath = "./lib/models/";
 const string woodPath = "./lib/textures/wood.bmp";
+const string cannonPath = "./lib/textures/cannon.bmp";
 const string brickPath = "./lib/textures/brick.bmp";
 const string playerPath = "./lib/models/ninja.dae";
 #elif defined(__linux__)
 const string shaderPath = "../lib/GLshader/";
 const string modelPath = "../lib/models/";
 const string woodPath = "../lib/textures/wood.bmp";
+const string cannonPath = "../lib/textures/cannon.bmp";
 const string brickPath = "../lib/textures/brick.bmp";
 const string playerPath = "../lib/models/ninja.dae";
 #endif
 
 
 vector<string>
-        GUI_OpenGL::Model_names = {"knot", "sphere", "cube", "teapot", "teapotLowPoly", "player"};
+        GUI_OpenGL::Model_names = {"cannon", "knot", "sphere", "cube", "teapot", "teapotLowPoly", "player"};
 
 GUI_OpenGL::GUI_OpenGL() {
     Model_num = 0;
@@ -102,6 +104,28 @@ bool GUI_OpenGL::init_Opengl() {
     glGenerateMipmap(GL_TEXTURE_2D); //Mip maps the texture
 
     SDL_FreeSurface(surface1);
+
+    //// Allocate Texture 2 (Cannon) ///////
+    SDL_Surface *surface2 = SDL_LoadBMP(cannonPath.c_str());
+    if (surface2 == NULL) { //If it failed, print the error
+        printf("Error: \"%s\"\n", SDL_GetError());
+        return 1;
+    }
+    GLuint tex2;
+    glGenTextures(1, &tex2);
+
+    //Load the texture into memory
+    glActiveTexture(GL_TEXTURE2);
+
+    glBindTexture(GL_TEXTURE_2D, tex2);
+    //What to do outside 0-1 range
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface1->w, surface1->h, 0, GL_BGR, GL_UNSIGNED_BYTE, surface1->pixels);
+    glGenerateMipmap(GL_TEXTURE_2D); //Mip maps the texture
+
+    SDL_FreeSurface(surface1);
     //// End Allocate Texture ///////
     Texs.push_back(tex0);
     Texs.push_back(tex1);
@@ -146,7 +170,6 @@ bool GUI_OpenGL::load_models() {
             playerModel = new Animated_Model();
             if (!playerModel->LoadModel(playerPath, ShaderProgram)) {
 //                std::cerr << "Error loading player model" << std::endl;
-                // TODO Track down this error
             }
         } else {
             string full_filename = modelPath + Model_names[i] + ".txt";
