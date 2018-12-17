@@ -27,7 +27,7 @@ const string playerPath = "../lib/models/ninja.dae";
 
 
 vector<string>
-        GUI_OpenGL::Model_names = {"cannon", "knot", "sphere", "cube", "teapot", "teapotLowPoly", "player"};
+        GUI_OpenGL::Model_names = {"slime", "cannon", "knot", "sphere", "cube", "teapot", "teapotLowPoly", "player"};
 
 GUI_OpenGL::GUI_OpenGL() {
     Model_num = 0;
@@ -122,7 +122,7 @@ bool GUI_OpenGL::init_Opengl() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface1->w, surface1->h, 0, GL_BGR, GL_UNSIGNED_BYTE, surface1->pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface1->w, surface1->h, 0, GL_BGR, GL_UNSIGNED_BYTE, surface1->pixels);
     glGenerateMipmap(GL_TEXTURE_2D); //Mip maps the texture
 
     SDL_FreeSurface(surface1);
